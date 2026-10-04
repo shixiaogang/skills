@@ -36,6 +36,35 @@
 \definecolor{purple}{HTML}{CC79A7}
 \definecolor{grid}{HTML}{D9DDE1}
 
+% Diagram palettes are separate from categorical data-plot colors above.
+% Select with diagram palette=teal (default), steel, or sage.
+\tikzset{
+  diagram palette/.is choice,
+  diagram palette/teal/.code={
+    \definecolor{diagram input}{HTML}{42658A}
+    \definecolor{diagram model}{HTML}{267D82}
+    \definecolor{diagram output}{HTML}{233342}
+    \definecolor{diagram training}{HTML}{A66A25}
+    \definecolor{diagram wire}{HTML}{64717B}
+  },
+  diagram palette/steel/.code={
+    \definecolor{diagram input}{HTML}{6F7F8F}
+    \definecolor{diagram model}{HTML}{3F668A}
+    \definecolor{diagram output}{HTML}{475560}
+    \definecolor{diagram training}{HTML}{B06C2C}
+    \definecolor{diagram wire}{HTML}{64717B}
+  },
+  diagram palette/sage/.code={
+    \definecolor{diagram input}{HTML}{6D7972}
+    \definecolor{diagram model}{HTML}{526F62}
+    \definecolor{diagram output}{HTML}{3F5B51}
+    \definecolor{diagram training}{HTML}{A05D4B}
+    \definecolor{diagram wire}{HTML}{66736B}
+  },
+  diagram palette/.default=teal,
+  diagram palette=teal
+}
+
 \tikzset{
   every picture/.style={
     >={Latex[length=2.2mm,width=1.5mm]},
@@ -44,8 +73,8 @@
   block/.style={
     rectangle,
     rounded corners=1.2mm,
-    draw=ink,
-    fill=blue!8,
+    draw=diagram model,
+    fill=diagram model!12,
     line width=0.8pt,
     minimum width=24mm,
     minimum height=9mm,
@@ -54,27 +83,40 @@
     inner ysep=1.2mm
   },
   process/.style={
+    block
+  },
+  input/.style={
     block,
-    fill=white
+    draw=diagram input,
+    fill=diagram input!8
+  },
+  output/.style={
+    block,
+    draw=diagram output,
+    fill=diagram output!8
+  },
+  training/.style={
+    block,
+    draw=diagram training,
+    fill=diagram training!8
   },
   start/.style={
-    block,
-    rounded corners=4mm,
-    fill=green!10
+    input,
+    rounded corners=4mm
   },
   decision/.style={
     diamond,
     aspect=2.2,
-    draw=ink,
-    fill=orange!12,
+    draw=diagram wire,
+    fill=white,
     line width=0.8pt,
     align=center,
     inner sep=1.2mm
   },
   tensor/.style={
     rectangle,
-    draw=blue,
-    fill=blue!10,
+    draw=diagram input,
+    fill=diagram input!8,
     line width=0.8pt,
     minimum width=20mm,
     minimum height=7mm,
@@ -84,8 +126,8 @@
     cylinder,
     shape border rotate=90,
     aspect=0.28,
-    draw=ink,
-    fill=green!10,
+    draw=diagram wire,
+    fill=white,
     line width=0.8pt,
     minimum width=19mm,
     minimum height=11mm,
@@ -93,7 +135,7 @@
   },
   operator/.style={
     circle,
-    draw=ink,
+    draw=diagram model,
     fill=white,
     line width=0.8pt,
     minimum size=5.5mm,
@@ -112,33 +154,47 @@
   },
   flow/.style={
     connector,
-    -{Latex},
-    draw=ink,
+    ->,
+    draw=diagram wire,
     line width=1.1pt
   },
   secondary flow/.style={
     connector,
-    -{Latex},
-    draw=muted,
-    line width=0.8pt,
+    ->,
+    draw=diagram wire,
+    line width=0.8pt
+  },
+  optional flow/.style={
+    secondary flow,
+    dashed
+  },
+  training flow/.style={
+    connector,
+    ->,
+    draw=diagram training,
+    line width=1.1pt,
     dashed
   },
   skip/.style={
-    connector,
-    -{Latex},
-    draw=muted,
-    line width=0.8pt
+    secondary flow
+  },
+  junction/.style={
+    circle,
+    draw=none,
+    fill=diagram wire,
+    minimum size=1mm,
+    inner sep=0pt
   },
   reference/.style={
     connector,
-    draw=muted,
+    draw=diagram wire,
     line width=0.7pt,
     dotted
   },
   inhibition/.style={
     connector,
     -{Bar[width=2.2mm]},
-    draw=ink,
+    draw=diagram wire,
     line width=1.0pt
   },
   edge label/.style={
@@ -155,13 +211,18 @@
 }
 
 \begin{document}
-\begin{tikzpicture}[node distance=13mm and 16mm]
-  % Replace this neutral example with the verified figure brief.
-  \node[block] (input) {Input};
-  \node[block, right=of input] (process) {Process};
-  \node[block, right=of process] (output) {Output};
+\begin{tikzpicture}[x=1mm,y=1mm,diagram palette=teal]
+  % Replace this schematic with the verified figure brief.
+  \node[input,minimum width=20mm] (input) at (0,0) {Input};
+  \node[process] (process) at (34,0) {Compute};
+  \node[operator] (add) at (58,0) {$+$};
+  \node[output,minimum width=20mm] (output) at (76,0) {Output};
+  \node[training] (signal) at (34,-22) {Training signal};
 
-  \draw[flow] (input) -- node[edge label] {data} (process);
-  \draw[flow] (process) -- node[edge label] {result} (output);
+  \draw[flow] (input.east) -- node[edge label] {data} (process.west);
+  \draw[flow] (process.east) -- (add.west);
+  \draw[flow] (add.east) -- (output.west);
+  \draw[skip] (input.north) -- (0,12) -- (58,12) -- (add.north);
+  \draw[training flow] (signal.north) -- (process.south);
 \end{tikzpicture}
 \end{document}
