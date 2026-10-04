@@ -1,0 +1,167 @@
+\documentclass[tikz,border=4pt]{standalone}
+
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \IfFontExistsTF{Arial}
+    {\setsansfont{Arial}}
+    {\setsansfont{TeX Gyre Heros}}
+  \IfFileExists{xeCJK.sty}{
+    \usepackage{xeCJK}
+    \IfFontExistsTF{Noto Sans CJK SC}
+      {\setCJKsansfont{Noto Sans CJK SC}}
+      {\IfFontExistsTF{PingFang SC}{\setCJKsansfont{PingFang SC}}{}}
+  }{}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[scaled=0.92]{helvet}
+\fi
+\renewcommand{\familydefault}{\sfdefault}
+
+\usetikzlibrary{
+  arrows.meta,
+  backgrounds,
+  calc,
+  fit,
+  positioning,
+  shapes.geometric
+}
+
+\definecolor{ink}{HTML}{222222}
+\definecolor{muted}{HTML}{5F6368}
+\definecolor{blue}{HTML}{0072B2}
+\definecolor{orange}{HTML}{E69F00}
+\definecolor{green}{HTML}{009E73}
+\definecolor{vermillion}{HTML}{D55E00}
+\definecolor{purple}{HTML}{CC79A7}
+\definecolor{grid}{HTML}{D9DDE1}
+
+\tikzset{
+  every picture/.style={
+    >={Latex[length=2.2mm,width=1.5mm]},
+    font=\sffamily\fontsize{8}{9.6}\selectfont
+  },
+  block/.style={
+    rectangle,
+    rounded corners=1.2mm,
+    draw=ink,
+    fill=blue!8,
+    line width=0.8pt,
+    minimum width=24mm,
+    minimum height=9mm,
+    align=center,
+    inner xsep=2mm,
+    inner ysep=1.2mm
+  },
+  process/.style={
+    block,
+    fill=white
+  },
+  start/.style={
+    block,
+    rounded corners=4mm,
+    fill=green!10
+  },
+  decision/.style={
+    diamond,
+    aspect=2.2,
+    draw=ink,
+    fill=orange!12,
+    line width=0.8pt,
+    align=center,
+    inner sep=1.2mm
+  },
+  tensor/.style={
+    rectangle,
+    draw=blue,
+    fill=blue!10,
+    line width=0.8pt,
+    minimum width=20mm,
+    minimum height=7mm,
+    align=center
+  },
+  store/.style={
+    cylinder,
+    shape border rotate=90,
+    aspect=0.28,
+    draw=ink,
+    fill=green!10,
+    line width=0.8pt,
+    minimum width=19mm,
+    minimum height=11mm,
+    align=center
+  },
+  operator/.style={
+    circle,
+    draw=ink,
+    fill=white,
+    line width=0.8pt,
+    minimum size=5.5mm,
+    inner sep=0pt
+  },
+  group/.style={
+    rectangle,
+    rounded corners=1.5mm,
+    draw=muted,
+    dashed,
+    line width=0.7pt,
+    inner sep=3mm
+  },
+  connector/.style={
+    rounded corners=1.2mm
+  },
+  flow/.style={
+    connector,
+    -{Latex},
+    draw=ink,
+    line width=1.1pt
+  },
+  secondary flow/.style={
+    connector,
+    -{Latex},
+    draw=muted,
+    line width=0.8pt,
+    dashed
+  },
+  skip/.style={
+    connector,
+    -{Latex},
+    draw=muted,
+    line width=0.8pt
+  },
+  reference/.style={
+    connector,
+    draw=muted,
+    line width=0.7pt,
+    dotted
+  },
+  inhibition/.style={
+    connector,
+    -{Bar[width=2.2mm]},
+    draw=ink,
+    line width=1.0pt
+  },
+  edge label/.style={
+    fill=white,
+    text=muted,
+    inner sep=1pt,
+    font=\sffamily\fontsize{7}{8.4}\selectfont
+  },
+  panel label/.style={
+    anchor=north west,
+    text=ink,
+    font=\sffamily\bfseries\fontsize{10}{12}\selectfont
+  }
+}
+
+\begin{document}
+\begin{tikzpicture}[node distance=13mm and 16mm]
+  % Replace this neutral example with the verified figure brief.
+  \node[block] (input) {Input};
+  \node[block, right=of input] (process) {Process};
+  \node[block, right=of process] (output) {Output};
+
+  \draw[flow] (input) -- node[edge label] {data} (process);
+  \draw[flow] (process) -- node[edge label] {result} (output);
+\end{tikzpicture}
+\end{document}

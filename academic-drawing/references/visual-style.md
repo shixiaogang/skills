@@ -1,0 +1,172 @@
+# 视觉样式
+
+所有参数均指最终排版尺寸。先查目标期刊的最新要求；未指定期刊时使用本文件的保守默认值。
+
+## 配色路由
+
+颜色编码数据或结构语义，不承担装饰作用。同一对象在同一篇文稿的不同面板和图片中保持同色。
+
+| 关系 | 默认方案 | 规则 |
+|---|---|---|
+| 2-8 个无序类别 | Okabe-Ito | 优先蓝、橙、蓝绿、朱红；黄色只用于大面积填充 |
+| 2-3 个强调灰度可辨的类别 | Paul Tol High Contrast | 同时使用点形、线型或直接标签 |
+| 6-10 个类别 | `petroff10` | 仅 Matplotlib 3.10+；类别过多时优先分面或直接标注 |
+| 连续递增值 | `viridis`、`cividis`、`magma` | 亮度随数值单调变化 |
+| 围绕中点偏离 | `RdBu`、`BrBG`、`PuOr` | 中点必须有科学意义，并围绕中点归一化 |
+| 周期变量 | `twilight` | 仅用于相位、方向、时刻等首尾相接的数据 |
+
+### 分类颜色
+
+默认 Okabe-Ito：
+
+```text
+blue       #0072B2
+orange     #E69F00
+green      #009E73
+vermillion #D55E00
+purple     #CC79A7
+sky blue   #56B4E9
+yellow     #F0E442
+black      #000000
+```
+
+白底上的黄色不能用于细线、小点或文字。类别少时不按表中顺序用满色板，只选择区分度最大的必要颜色。
+
+灰度优先的三色方案：
+
+```text
+dark blue #004488
+gold      #DDAA33
+rose      #BB5566
+```
+
+中性色：
+
+```text
+background     #FFFFFF
+primary ink    #222222
+secondary ink  #5F6368
+non-data grid  #D9DDE1
+missing value  #E6E6E6
+```
+
+### 连续与发散颜色
+
+- 顺序值优先 `viridis` 或 `cividis`。需要暗背景或高动态范围时才考虑 `magma`。
+- 发散值只在零、基线、均值或阈值有明确意义时使用；使用 `TwoSlopeNorm` 等方式固定中点。
+- 多个热图比较时共享色域。不得逐图自动拉伸后再进行视觉比较。
+- 缺失值使用独立中性色并在图例中说明，不能映射到色阶低端。
+- 禁止用 `jet`、`rainbow`、`hsv` 或其他亮度非单调色图表达连续数值。
+
+### 可访问性
+
+- 不以颜色作为唯一区分手段；至少再使用直接标签、点形、线型、位置或纹理之一。
+- 优先直接标注数据线或对象，避免读者在图与远处图例间反复匹配颜色。
+- 重要图形对象与背景的对比度至少为 `3:1`；小字优先达到 `4.5:1`。
+- 检查灰度版本以及 protanopia、deuteranopia、tritanopia 模拟结果。
+- 荧光双通道图优先 magenta-green，不使用 red-green。三通道图同时提供各通道灰度图或关键双通道组合。
+
+## 线条层级
+
+| 元素 | 默认线宽 | 用法 |
+|---|---:|---|
+| 最细有效线条 | `0.5 pt` | 最终尺寸硬下限 |
+| 普通数据线、坐标轴、节点轮廓 | `0.8-1.0 pt` | 默认视觉层级 |
+| 主流程或重点数据线 | `1.1-1.4 pt` | 每个面板只突出核心路径 |
+| 次要、可选或间接关系 | `0.7-0.9 pt` | 使用虚线并保持缩小可辨 |
+| 非关键主网格 | `0.5-0.6 pt` | 浅灰、置于数据后方 |
+| 误差棒 | `0.7-0.9 pt` | 图注说明其统计含义 |
+
+Science 的通用制图指南允许最终尺寸最细约 `0.28 pt`，部分 Science 子刊和 IEEE 建议至少 `0.5 pt`。本技能采用更保守的 `0.5 pt` 默认下限。
+
+### 线型语义
+
+```text
+solid     主要数据、已执行流程、确定关系
+dashed    次要路径、可选流程、间接关系
+dotted    参考线、预测、假设或待验证关系
+dash-dot  第三个数据系列；只在确有需要时使用
+```
+
+- 每张图最多使用三种线型。
+- 相同线型在同一张图中只表达一种关系。
+- 自定义虚线应有足够长的实线段和间隔，避免缩小后变成灰线。
+- 线条重叠时同时改变点形、端点或直接标签，不只改变虚线节奏。
+
+## 箭头与连接
+
+- 全图保持一个主阅读方向。流程图通常自上而下，架构图通常自左向右。
+- 优先正交折线，减少折点。发生转折时默认使用一致半径的圆角过渡，最终尺寸建议 `1-1.5 mm`；同一张图不能随意混用不同圆角半径。
+- 尖角只保留给电路、数学构造、精确几何或其他以角点承载语义的图。曲线只用于跳过拥挤区域、表达回路或连续轨迹。
+- 箭头不得穿过节点、文字、面板标签或其他箭头标签。
+- 尽量消除交叉。无法消除时改变布局；只有关系过密且不可重排时使用明确的跨线桥。
+- 共享起点的分支使用一致的出口、间距和转折位置。
+- 箭头标签放在相邻空白区域，不压在线段上。
+- 用箭头表示方向，用无箭头线表示无向关联，用双箭头表示确实双向的关系，用钝端或 T 形端点表示抑制。
+
+TikZ 推荐端点：
+
+```tex
+>={Latex[length=2.2mm,width=1.5mm]}
+connector/.style={rounded corners=1.2mm}
+```
+
+`rounded corners` 只会作用于路径中实际存在的转折，直线可以安全复用同一连接样式。箭头大小应随线宽一起检查，不能仅靠加粗线条获得可见性。
+
+## 标记、填充与网格
+
+- 折线和散点系列使用不同点形；关键标记的最终直径从 `5-6 pt` 起。
+- 点密集时减小尺寸和透明度，或使用 hexbin、密度和栅格化点层，不静默抽样。
+- 置信带使用与中心线相同的色相，默认透明度 `0.15-0.25`。
+- 误差棒必须在图注说明 SD、SE、CI、credible interval 或其他含义。
+- 架构节点使用白色或低饱和浅填充。避免渐变、投影、发光和装饰性纹理。
+- 默认移除上、右轴线。网格仅在帮助定量读取时保留水平主网格。
+- 条形图从零基线开始；非零基线必须显式标识并有科学理由。
+
+## 字体与标签
+
+| 元素 | 默认字号 |
+|---|---:|
+| 正文标签、轴标题 | `7-9 pt` |
+| 刻度、图例 | `6-8 pt` |
+| 面板标签 | `9-10 pt` 粗体 |
+| 绝对下限 | `6 pt` |
+
+- 使用一种 sans-serif 字体族；缺少目标字体时选可嵌入的兼容字体。
+- 整张图最多使用三个字号层级，只用字重和位置建立必要层次。
+- 坐标轴标题包含量名和单位，如 `Latency (ms)`。
+- 变量名、缩写、上下标和数学符号与正文一致。
+- 图内不放可由图注承担的长标题或说明段落。
+- 标签不能依赖颜色名称，例如用“Treatment A”而不是“红线”。
+
+## 尺寸与留白
+
+- 先确定单栏、双栏或自定义宽度，再绘制；不得最后整体缩小来满足版面。
+- 未指定目标时以约 `90 mm` 单栏或 `180 mm` 双栏宽度试排，并在实际嵌入尺寸复查。
+- 面板之间保留稳定间距，但不把每个面板包进装饰性卡片。
+- 面板标签位置统一，不占用数据区域。
+- 图例不应迫使画布产生大面积空白；能直接标注时移除图例。
+
+## 快速检查
+
+- 配色类型是否与数据类型一致？
+- 颜色语义是否跨面板一致？
+- 灰度和色觉缺陷模拟下是否仍可理解？
+- 最细线条是否至少 `0.5 pt`？
+- 最小文字是否至少 `6 pt`？
+- 正交折线的圆角半径是否一致，尖角是否有明确语义？
+- 箭头方向、端点和标签是否正确？
+- 是否存在交叉、遮挡、裁切或无意义空白？
+- 图中每个视觉元素是否承担信息功能？
+
+## 来源
+
+- [Science Guide to Preparing Figures](https://www.science.org/cms/asset/6ebc81c2-e38a-4cea-b0c2-a0402817f13e/author_prep_guide_2025.pdf)
+- [IEEE Create Graphics for Your Article](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/)
+- [Color Universal Design](https://jfly.uni-koeln.de/color/)
+- [Paul Tol Colour Schemes](https://sronpersonalpages.nl/~pault/)
+- [Matplotlib Choosing Colormaps](https://matplotlib.org/stable/users/explain/colors/colormaps.html)
+- [Matplotlib 3.10 Accessible Color Cycle](https://matplotlib.org/stable/users/prev_whats_new/whats_new_3.10.0.html#new-more-accessible-color-cycle)
+- [W3C Non-text Contrast](https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast)
+- [Oxford University Press Making Figures Accessible](https://static.primary.prod.gcms.the-infra.com/static/site/journals/document/Figures_accessibility_journals_edition_v1.pdf)
+- [PGF/TikZ Manual: Rounded Corners](https://tikz.dev/tikz-paths#pgf.rounded:corners)
