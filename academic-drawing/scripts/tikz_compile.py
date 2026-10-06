@@ -149,6 +149,7 @@ def convert_svg(pdf: Path, output: Path) -> None:
 
 def convert_png(pdf: Path, output: Path, dpi: int) -> None:
     pdftocairo = executable("pdftocairo")
+    pdftoppm = executable("pdftoppm")
     magick = executable("magick")
     if pdftocairo:
         prefix = output.with_suffix("")
@@ -164,6 +165,12 @@ def convert_png(pdf: Path, output: Path, dpi: int) -> None:
             ],
             pdf.parent,
         )
+    elif pdftoppm:
+        prefix = output.with_suffix("")
+        result = run_command(
+            [pdftoppm, "-png", "-singlefile", "-r", str(dpi), str(pdf), str(prefix)],
+            pdf.parent,
+        )
     elif magick:
         result = run_command(
             [
@@ -177,7 +184,7 @@ def convert_png(pdf: Path, output: Path, dpi: int) -> None:
         )
     else:
         raise CompileError(
-            "PNG requested but no converter found. Install pdftocairo or ImageMagick."
+            "PNG requested but no converter found. Install Poppler or ImageMagick."
         )
 
     if result.returncode != 0 or not output.is_file():

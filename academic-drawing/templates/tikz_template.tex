@@ -37,7 +37,7 @@
 \definecolor{grid}{HTML}{D9DDE1}
 
 % Diagram palettes are separate from categorical data-plot colors above.
-% Select with diagram palette=teal (default), steel, or sage.
+% Select with diagram palette=teal (default), steel, sage, or publication-pastel.
 \tikzset{
   diagram palette/.is choice,
   diagram palette/teal/.code={
@@ -60,6 +60,13 @@
     \definecolor{diagram output}{HTML}{3F5B51}
     \definecolor{diagram training}{HTML}{A05D4B}
     \definecolor{diagram wire}{HTML}{66736B}
+  },
+  diagram palette/publication-pastel/.code={
+    \definecolor{diagram input}{HTML}{4B86B4}
+    \definecolor{diagram model}{HTML}{9892AF}
+    \definecolor{diagram output}{HTML}{4C9775}
+    \definecolor{diagram training}{HTML}{CC554B}
+    \definecolor{diagram wire}{HTML}{444444}
   },
   diagram palette/.default=teal,
   diagram palette=teal
@@ -208,6 +215,25 @@
     text=ink,
     font=\sffamily\bfseries\fontsize{10}{12}\selectfont
   }
+}
+
+% Optional surface treatment; select after the palette in the picture options.
+\tikzset{
+  diagram surface/.is choice,
+  diagram surface/publication/.style={
+    block/.append style={draw=ink,fill=diagram model!18,line width=.75pt},
+    input/.append style={draw=ink,fill=diagram input!22},
+    output/.append style={draw=ink,fill=diagram output!20},
+    training/.append style={draw=ink,fill=diagram training!18},
+    tensor/.append style={draw=ink,fill=diagram input!22,line width=.75pt},
+    operator/.append style={draw=ink,line width=.75pt},
+    flow/.append style={line width=.85pt},
+    secondary flow/.append style={line width=.6pt},
+    training flow/.append style={line width=.85pt},
+    group/.append style={draw=muted,line width=.6pt,rounded corners=2mm}
+  },
+  publication panel/.style={rectangle,draw=ink,fill=white,
+    rounded corners=2.5mm,line width=.75pt,inner sep=3mm}
 }
 
 \begin{document}

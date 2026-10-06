@@ -165,6 +165,8 @@ def validate_png(
     expected_width_mm: Optional[float],
     expected_height_mm: Optional[float],
     tolerance_mm: float,
+    placed_width_mm: Optional[float] = None,
+    placed_height_mm: Optional[float] = None,
 ) -> List[Dict[str, str]]:
     findings: List[Dict[str, str]] = []
     data = path.read_bytes()
@@ -236,9 +238,13 @@ def validate_png(
         )
         return findings
 
+    has_placement = placed_width_mm is not None or placed_height_mm is not None
     if dpi_x and dpi_y:
-        findings.append(issue("PASS", f"PNG resolution {dpi_x:.1f}x{dpi_y:.1f} dpi"))
-        if min(dpi_x, dpi_y) + 0.5 < min_dpi:
+        resolution_label = "DPI metadata" if has_placement else "resolution"
+        findings.append(
+            issue("PASS", f"PNG {resolution_label} {dpi_x:.1f}x{dpi_y:.1f} dpi")
+        )
+        if not has_placement and min(dpi_x, dpi_y) + 0.5 < min_dpi:
             findings.append(
                 issue("FAIL", f"PNG resolution is below required {min_dpi:g} dpi")
             )
@@ -255,8 +261,23 @@ def validate_png(
         )
     elif require_dpi:
         findings.append(issue("FAIL", "PNG has no physical DPI metadata"))
+    elif has_placement:
+        findings.append(
+            issue("PASS", "PNG DPI metadata is absent; using final placement size")
+        )
     else:
         findings.append(issue("WARN", "PNG has no physical DPI metadata"))
+
+    if has_placement:
+        findings.extend(
+            validate_png_placement(
+                width,
+                height,
+                placed_width_mm,
+                placed_height_mm,
+                min_dpi,
+            )
+        )
 
     if bit_depth != 8 or interlace != 0:
         findings.append(
@@ -303,6 +324,61 @@ def validate_png(
         findings.append(issue("FAIL", "PNG appears blank or single-color"))
     else:
         findings.append(issue("PASS", "PNG contains visible tonal variation"))
+    return findings
+
+
+def validate_png_placement(
+    width: int,
+    height: int,
+    placed_width_mm: Optional[float],
+    placed_height_mm: Optional[float],
+    min_dpi: float,
+) -> List[Dict[str, str]]:
+    """Check resolution at final size without accepting nonuniform scaling."""
+    if placed_width_mm is None:
+        placed_width_mm = placed_height_mm * (width / height)
+    elif placed_height_mm is None:
+        placed_height_mm = placed_width_mm * (height / width)
+
+    if not all(
+        math.isfinite(value) and value > 0
+        for value in (placed_width_mm, placed_height_mm)
+    ):
+        return [issue("FAIL", "derived PNG placement size is not positive and finite")]
+
+    findings = [
+        issue(
+            "PASS",
+            f"final placement size {placed_width_mm:.2f}x{placed_height_mm:.2f} mm",
+        )
+    ]
+    dpi_x = width / placed_width_mm * 25.4
+    dpi_y = height / placed_height_mm * 25.4
+    if not math.isclose(dpi_x, dpi_y, rel_tol=0.01):
+        findings.append(
+            issue(
+                "FAIL",
+                "PNG placement distorts the pixel aspect ratio by more than 1%; "
+                "use one placement dimension to preserve proportions",
+            )
+        )
+    else:
+        findings.append(issue("PASS", "PNG placement preserves the pixel aspect ratio"))
+    if not math.isfinite(dpi_x) or not math.isfinite(dpi_y):
+        findings.append(issue("FAIL", "PNG effective DPI is not finite"))
+        return findings
+
+    findings.append(
+        issue("PASS", f"PNG effective resolution {dpi_x:.1f}x{dpi_y:.1f} dpi")
+    )
+    if min(dpi_x, dpi_y) < min_dpi:
+        findings.append(
+            issue(
+                "FAIL",
+                f"PNG effective resolution at final placement is below required "
+                f"{min_dpi:g} dpi",
+            )
+        )
     return findings
 
 
@@ -734,6 +810,8 @@ def validate_file(
             args.expected_width_mm,
             args.expected_height_mm,
             args.tolerance_mm,
+            args.placed_width_mm,
+            args.placed_height_mm,
         )
     if suffix == ".svg":
         return validate_svg(
@@ -757,10 +835,34 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         description="Validate academic figure source and output files."
     )
     parser.add_argument("files", nargs="+", type=Path)
-    parser.add_argument("--min-dpi", type=float, default=300.0)
-    parser.add_argument("--require-dpi", action="store_true")
-    parser.add_argument("--expected-width-mm", type=float)
-    parser.add_argument("--expected-height-mm", type=float)
+    parser.add_argument(
+        "--min-dpi", type=float, default=300.0,
+        help="minimum PNG DPI at final placement size, or from metadata "
+        "when no placement is given",
+    )
+    parser.add_argument(
+        "--require-dpi", action="store_true",
+        help="require PNG physical DPI metadata, even when placement size is given",
+    )
+    parser.add_argument(
+        "--expected-width-mm", type=float,
+        help="expected native/document width (PNG uses DPI metadata); "
+        "does not set final placement",
+    )
+    parser.add_argument(
+        "--expected-height-mm", type=float,
+        help="expected native/document height (PNG uses DPI metadata); "
+        "does not set final placement",
+    )
+    parser.add_argument(
+        "--placed-width-mm", type=float,
+        help="final PNG width in the document; infer height proportionally if omitted",
+    )
+    parser.add_argument(
+        "--placed-height-mm", type=float,
+        help="final PNG height in the document; infer width proportionally if omitted; "
+        "both dimensions must preserve aspect ratio within 1%%",
+    )
     parser.add_argument("--tolerance-mm", type=float, default=1.0)
     parser.add_argument("--json", action="store_true", dest="as_json")
     return parser.parse_args(argv)
@@ -768,15 +870,23 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_args(argv)
-    if args.min_dpi <= 0 or args.tolerance_mm < 0:
+    if not math.isfinite(args.min_dpi) or args.min_dpi <= 0:
         print(
-            "ERROR: --min-dpi must be positive and tolerance non-negative",
+            "ERROR: --min-dpi must be a positive finite number",
+            file=sys.stderr,
+        )
+        return 2
+    if not math.isfinite(args.tolerance_mm) or args.tolerance_mm < 0:
+        print(
+            "ERROR: --tolerance-mm must be a non-negative finite number",
             file=sys.stderr,
         )
         return 2
     for value, name in (
         (args.expected_width_mm, "--expected-width-mm"),
         (args.expected_height_mm, "--expected-height-mm"),
+        (args.placed_width_mm, "--placed-width-mm"),
+        (args.placed_height_mm, "--placed-height-mm"),
     ):
         if value is not None and (not math.isfinite(value) or value <= 0):
             print(f"ERROR: {name} must be a positive finite number", file=sys.stderr)
