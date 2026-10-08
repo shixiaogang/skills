@@ -1,0 +1,227 @@
+{
+  "collection": "academic-drawing reference figures",
+  "retrieved": "2026-10-08",
+  "description": "按版式类型分类的参考图：架构、流程、对照、神经网络。原图原样保存；本仓库仅作风格参考与审美对照，不作重分发。",
+  "images": {
+    "architecture": [
+      {
+        "name": "microservices-architecture",
+        "file": "architecture/microservices-architecture.png",
+        "sha256": "d697ee6f91264c6ad9656c7e75e3ea17acec28b9f0845cda906889522a53a18b",
+        "width_px": 1456,
+        "height_px": 971,
+        "topic": "带 API Gateway、User/Order/Payment/Notification Service 和消息队列的微服务架构",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "顶部大粗标题封面；网关列单独放左侧成为分支中枢；服务按色分类对应到 Border/Fill 对；底部虚线卡片做图例说明通信方式"
+      },
+      {
+        "name": "three-tier-architecture",
+        "file": "architecture/three-tier-architecture.png",
+        "sha256": "ad4e0cfc20b270baa6537bd0e788843d36b7f81d06b6b8bc0a14af76e2c78378",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "Presentation/Business Logic/Data Tier 的三层架构示意",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "三张等高卡片横向并列，每张卡片内放设备插画；卡片顶部用粗体色标题；底部一条浅色点线+彩色圆点标明三层对应位置"
+      },
+      {
+        "name": "multi-az-regional-architecture",
+        "file": "architecture/multi-az-regional-architecture.png",
+        "sha256": "cf42afd3c96e067f22aad7402cf9c28d8f5384f5431809d97f5aa0e70a3571b8",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "单 Region 跨三个 Availability Zone 的高可用部署",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "外层虚线边框表示物理边界（Region），内层虚线框表示 AZ 等逻辑分区；三个 AZ 竖向切片内保持相同组件顺序和颜色；底部 Load Balancer 作为统一入口横跨三 AZ"
+      },
+      {
+        "name": "api-gateway-fanout",
+        "file": "architecture/api-gateway-fanout.png",
+        "sha256": "cfeab51de4b60622b384a9cacf00322d9bcdb9d1529a72a89323096b92fff1a4",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "多种客户端经 API Gateway 认证路由到多个下游 Service",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "左右对称 fan-in / fan-out 结构，中心 Gateway 节点明显放大并带内部 feature bullet list；下游 service 保持等高小卡片；底部虚线卡片承担次级强调"
+      },
+      {
+        "name": "web-reference-architecture",
+        "file": "architecture/web-reference-architecture.png",
+        "sha256": "ec43decc4b403961333e8c9117a75edeb3f26a0a12259d710f7d0deddbd282df",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "典型 Web 后端：Client → LB → App → Cache/DB/Queue/Worker + 旁挂 CDN",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "主干水平流 + 两条垂直分支（CDN 旁路、Queue+Worker 异步）；CDN 分支用虚线表示可选；App Server 节点内塞小机架图标表示集群；双向关系用双向箭头"
+      },
+      {
+        "name": "polyglot-persistence",
+        "file": "architecture/polyglot-persistence.png",
+        "sha256": "693b02db9cb1ffa12324f10dd5b8a48232138e82aa918e207c941c465cb1d5cb",
+        "width_px": 1456,
+        "height_px": 971,
+        "topic": "一个 Application 面向五种存储的多模型持久化",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "单节点在顶部向下分出等宽并列列；每列由「Logo+类别」+「使用场景」两层组成；通过行对齐而非框线实现分层"
+      },
+      {
+        "name": "three-architecture-patterns",
+        "file": "architecture/three-architecture-patterns.png",
+        "sha256": "8bd6322d82a0f136a3ed44781f2f048bdbd3b61bb51e36c555c66fc44d35be1e",
+        "width_px": 1672,
+        "height_px": 941,
+        "topic": "三种架构模式并排对照：Microservices / CQRS / Event-Driven",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "三张等宽等高面板横向并列，每张顶部有编号 + 名称的实色标题栏；面板内自成完整小架构图；编号 1/2/3 是分类标签而非流程顺序"
+      },
+      {
+        "name": "kubernetes-pv-pvc",
+        "file": "architecture/kubernetes-pv-pvc.png",
+        "sha256": "c23b1d9cfdc00072fbe372e2763d7da9bd6ad7dee5e9d16f55392a38a07f8474",
+        "width_px": 1456,
+        "height_px": 728,
+        "topic": "Kubernetes PV vs PVC 概览 + 详述",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "上部一行流程图，关键关系（如「Binds to」）用虚线+文字标注与常规实线区分；下部两张详细说明卡用相同底色+深色标题；同一张图承担概览+详述两种阅读深度"
+      }
+    ],
+    "flow": [
+      {
+        "name": "messaging-flow",
+        "file": "flow/messaging-flow.png",
+        "sha256": "a3e4e0682b2d8497df15ed4be7e6320b94367ff8aa212214981ca908fee593dd",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "基于 Kafka + Redis + WebSocket 的 Alice-Bob 消息投递流程",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "顺序流程使用彩色实心编号圆点贴在箭头上，颜色按步骤循环；节点内图标 + 粗标题 + 一到两行描述；按角色分色"
+      },
+      {
+        "name": "mcp-protocol-flow",
+        "file": "flow/mcp-protocol-flow.png",
+        "sha256": "8af8fd431e22bca453dfc14e251702a07714085e6a4f7738ee3882b747f86947",
+        "width_px": 1456,
+        "height_px": 728,
+        "topic": "MCP 协议：静态架构 + 运行时流程二合一",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "上下双区：上部大图标节点+双向箭头显示静态架构，下部用更小的编号卡横向排列显示运行时流程；编号圆点色与节点色一致；底部整体用浅色大面板包起来形成视觉分区"
+      },
+      {
+        "name": "rag-flow",
+        "file": "flow/rag-flow.png",
+        "sha256": "9b2abcafd384705570203ede9e1390c2c8182a800a87bc9704eb37ce11019572",
+        "width_px": 1536,
+        "height_px": 1024,
+        "topic": "RAG 流程：User Query → Embedding → Vector DB → Combine → LLM → Response",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "两行流程中间有汇合节点；每步节点标号与标题直接在节点内置顶（无外置圆点）；关键"原始 Query"在步骤 4 处单独跳线补入"
+      }
+    ],
+    "comparison": [
+      {
+        "name": "cap-tradeoff",
+        "file": "comparison/cap-tradeoff.png",
+        "sha256": "3204b77c17d33f8e5fe78fc560138acd8280e07792e74e55d54ca9f2f0727280",
+        "width_px": 1456,
+        "height_px": 794,
+        "topic": "CAP 定理的实际权衡：Primary 和 Replica 的两个选项",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "顶部主标题 + 一行副标题提问；上部一行场景图；下部两张并列对比卡片，顶部有色条标题（绿=推荐方案/红=风险方案），内部用 You get:/You pay: 二元对照；底部单行结论卡"
+      },
+      {
+        "name": "caching-tradeoff",
+        "file": "comparison/caching-tradeoff.png",
+        "sha256": "f3afe8917c3e30ab3482abd63cbec10e1b555382de0b2c38cf721d88cd1d7fbd",
+        "width_px": 1456,
+        "height_px": 761,
+        "topic": "Caching: 用正确性换速度；缓存 vs 数据库对比 + 底部 spectrum",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "两条平行路径，每条终点带 ✓/⚠/✗ 符号卡片；底部一条绿→黄→红 spectrum 色条 + 三组对照说明"
+      },
+      {
+        "name": "kubernetes-configmap",
+        "file": "comparison/kubernetes-configmap.png",
+        "sha256": "d91346b01cf8db73fcfb9aab987b55803552e47bbeeaeb703e2e9329c106eff4",
+        "width_px": 1456,
+        "height_px": 728,
+        "topic": "Kubernetes ConfigMap：顶部运行时视图 + 底部三栏（示例/工作原理/好处）",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "顶部一行是运行时视图；底部一行三栏：代码示例、编号步骤卡（1-4 带圆点）、好处列表（✓/图标+短句）"
+      },
+      {
+        "name": "data-shape-to-database",
+        "file": "comparison/data-shape-to-database.png",
+        "sha256": "fde7c13d5858d9f7648805f34e11f03acd1a269b984431857f582cf53bb2d757",
+        "width_px": 1456,
+        "height_px": 761,
+        "topic": "数据形态 → 适配数据库映射",
+        "source": "user-provided",
+        "original_source_hint": "newsletter.systemdesignclassroom.com",
+        "borrow": "左列（场景）→ 中间箭头 → 右列（推荐方案），多行同样结构重复；两列中每张卡片都是图标+粗标题+小字描述；左右两列用不同浅色区分但同行内保持色相同族"
+      }
+    ],
+    "neural-network": [
+      {
+        "name": "cnn-feature-learning-and-classification",
+        "file": "neural-network/cnn-feature-learning-and-classification.png",
+        "sha256": "27cd43dfa0f727e763d1b6e265271f71d9de234dc4b8ffb3d418df738b49a444",
+        "width_px": 1200,
+        "height_px": 405,
+        "topic": "Convolutional Neural Network overall pipeline",
+        "source": "user-provided",
+        "original_source_hint": "常见教材/讲义 CNN 示意图；无法确定具体来源作者",
+        "borrow": "等轴测立方体表示特征图（三轴对应 H/W/C）；立方体尺寸从左到右逐级缩小表示 spatial downsampling；斜线从前层投射到后层表示 Conv 感受野；底部双 brace 把管线划分为两段；输出端用列向量+直接类别标签替代独立 legend",
+        "caveat": "原图是单色线稿；本 skill 产物只借布局和连线，配色和线条按统一视觉样式落地"
+      },
+      {
+        "name": "transformer-encoder-decoder",
+        "file": "neural-network/transformer-encoder-decoder.png",
+        "sha256": "ff302f56c7bd4f2f2f4b47a2cfa8c93c66740214af9bed3a30c3472894f54c96",
+        "width_px": 1122,
+        "height_px": 1538,
+        "topic": "Transformer overall architecture (Vaswani et al. 2017 Figure 1)",
+        "source": "user-provided",
+        "original_source_hint": "Vaswani et al., \"Attention Is All You Need\", NeurIPS 2017",
+        "paper_url": "https://arxiv.org/abs/1706.03762",
+        "borrow": "左右两列整体用浅色容器 + 外部 N× 标记表示重复 N 次；块按运算类型分色且色相稳定；残差连接用从模块入口外绕回到 Add&Norm 的正交线；Encoder→Decoder 的 cross-attention 用显式长桥线；⊕ 符号表示 token embedding 和 positional encoding 相加",
+        "caveat": "原图配色是论文版式；本 skill 产物只借布局和连线，配色按统一视觉样式落地"
+      },
+      {
+        "name": "attention-mechanisms",
+        "file": "neural-network/attention-mechanisms.png",
+        "sha256": "e15a04e17f71188e5db5bb853031cb3690fa2cc1b4f195ebbcb78e9dbd473aaa",
+        "width_px": 1213,
+        "height_px": 658,
+        "topic": "Scaled Dot-Product Attention 与 Multi-Head Attention 并排对照 (Vaswani et al. 2017 Figure 2)",
+        "source": "user-provided",
+        "original_source_hint": "Vaswani et al., \"Attention Is All You Need\", NeurIPS 2017",
+        "paper_url": "https://arxiv.org/abs/1706.03762",
+        "borrow": "两图并列同页共享块样式；Q/K/V 作为底部对称输入；多头并行用错位堆叠的叠块阴影；右侧 brace 标 h 表示 head 数量；Q/K/V 字母直接作为端点标签",
+        "caveat": "原图配色是论文版式；本 skill 产物只借布局和连线，配色按统一视觉样式落地"
+      }
+    ]
+  },
+  "notes": {
+    "licensing": "architecture/flow/comparison 下的 15 张图原始出处最大可能来源是 System Design Classroom newsletter，许可未明确标注；neural-network 下 3 张图分别来自公开教材/讲义和 arXiv 版 Attention Is All You Need。本仓库仅保存用作风格参考与审美对照，不作重分发。若 skill 公开发布，publish 前需做：（a）取得原作者许可或引用原论文；或（b）替换为按本 index 借鉴清单自绘的参考图。",
+    "extension_strategy": [
+      "新增参考图保存到对应子目录（architecture / flow / comparison / neural-network），用描述性 kebab-case 命名。",
+      "重新运行 examples/make_contact_sheets.py 刷新每类 contact sheet。",
+      "在本 sources.json 补一行；sha256 可用 shasum -a 256 计算。",
+      "引入第三方图时核验许可：CC BY 4.0 / MIT / arXiv 版论文可本地保存；CC BY-NC-ND 和未声明许可的图仅链接参考。"
+    ]
+  }
+}

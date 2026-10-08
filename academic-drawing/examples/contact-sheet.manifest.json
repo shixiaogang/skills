@@ -1,0 +1,58 @@
+{
+  "sheets": [
+    {
+      "category": "architecture",
+      "size": [
+        2392,
+        1852
+      ],
+      "items": [
+        "api-gateway-fanout",
+        "kubernetes-pv-pvc",
+        "microservices-architecture",
+        "multi-az-regional-architecture",
+        "polyglot-persistence",
+        "three-architecture-patterns",
+        "three-tier-architecture",
+        "web-reference-architecture"
+      ]
+    },
+    {
+      "category": "flow",
+      "size": [
+        2392,
+        636
+      ],
+      "items": [
+        "mcp-protocol-flow",
+        "messaging-flow",
+        "rag-flow"
+      ]
+    },
+    {
+      "category": "comparison",
+      "size": [
+        2392,
+        1244
+      ],
+      "items": [
+        "caching-tradeoff",
+        "cap-tradeoff",
+        "data-shape-to-database",
+        "kubernetes-configmap"
+      ]
+    },
+    {
+      "category": "neural-network",
+      "size": [
+        2392,
+        636
+      ],
+      "items": [
+        "attention-mechanisms",
+        "cnn-feature-learning-and-classification",
+        "transformer-encoder-decoder"
+      ]
+    }
+  ]
+}

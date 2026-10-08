@@ -1,0 +1,131 @@
+{
+  "collection": "academic-drawing icons",
+  "retrieved": "2026-10-08",
+  "default_recommendation": {
+    "latex": "fontawesome5",
+    "image_prompt": "describe icon semantically; let model draw (Phosphor regular / Lucide / Material Symbols Outlined are good style anchors)"
+  },
+  "sets": [
+    {
+      "name": "Font Awesome Free 6",
+      "homepage": "https://fontawesome.com/search?o=r&m=free",
+      "license": "字体 SIL OFL 1.1；图标 CC BY 4.0；LaTeX 包 LPPL 1.3c",
+      "license_url": "https://fontawesome.com/license/free",
+      "latex_package": "fontawesome5 (CTAN) 或 fontawesome6",
+      "install": "TeX Live / MiKTeX 自带 fontawesome5；更新到 2024+ 可用 fontawesome6",
+      "usage_tikz": "\\usepackage{fontawesome5}; node 内写 \\faDatabase 等",
+      "primary_choice_for": "TikZ 首选；0 依赖图片资源",
+      "common_icons": {
+        "user": "\\faUser",
+        "users": "\\faUsers",
+        "laptop": "\\faLaptop",
+        "mobile": "\\faMobile",
+        "desktop": "\\faDesktop",
+        "database": "\\faDatabase",
+        "server": "\\faServer",
+        "cloud": "\\faCloud",
+        "code": "\\faCode",
+        "code_branch": "\\faCodeBranch",
+        "terminal": "\\faTerminal",
+        "cog": "\\faCog",
+        "cogs": "\\faCogs",
+        "bell": "\\faBell",
+        "envelope": "\\faEnvelope",
+        "globe": "\\faGlobe",
+        "network_wired": "\\faNetworkWired",
+        "microchip": "\\faMicrochip",
+        "memory": "\\faMemory",
+        "hdd": "\\faHdd",
+        "shield_alt": "\\faShieldAlt",
+        "lock": "\\faLock",
+        "key": "\\faKey",
+        "sitemap": "\\faSitemap",
+        "project_diagram": "\\faProjectDiagram",
+        "exchange_alt": "\\faExchangeAlt",
+        "sync_alt": "\\faSyncAlt",
+        "bug": "\\faBug",
+        "search": "\\faSearch",
+        "file_alt": "\\faFileAlt",
+        "brain": "\\faBrain",
+        "robot": "\\faRobot",
+        "chart_line": "\\faChartLine",
+        "eye": "\\faEye",
+        "bolt": "\\faBolt",
+        "stream": "\\faStream"
+      },
+      "caveats": "CC BY 4.0 要求署名；品牌图标受公司商标限制；仅支持 pdfLaTeX/XeLaTeX/LuaLaTeX，不支持 LaTeX+dvi 流水线"
+    },
+    {
+      "name": "Tabler Icons",
+      "homepage": "https://tabler.io/icons",
+      "license": "MIT",
+      "license_url": "https://github.com/tabler/tabler-icons/blob/master/LICENSE",
+      "latex_package": null,
+      "usage_tikz": "下载 SVG → 转 PDF（pdf2svg / svg 包）→ \\includegraphics",
+      "usage_prompt": "prompt 中写 \"Tabler-style outlined icon\"，模型会近似那种 2 px 等线条",
+      "primary_choice_for": "需要线性等宽图标集时；图像模型的风格锚",
+      "caveats": "无原生 LaTeX 包；SVG → PDF 流水线需 lualatex + svg 包或预处理"
+    },
+    {
+      "name": "Phosphor Icons",
+      "homepage": "https://phosphoricons.com/",
+      "license": "MIT",
+      "license_url": "https://github.com/phosphor-icons/homepage/blob/master/LICENSE",
+      "latex_package": null,
+      "usage_prompt": "prompt 中写 \"Phosphor regular / bold / fill style icon\"；6 种 weight 覆盖了从线性到实心",
+      "primary_choice_for": "图像模型 prompt 的首选风格锚，含 9000+ 图标",
+      "weights": ["thin", "light", "regular", "bold", "fill", "duotone"],
+      "caveats": "建议只用 regular 或 bold 两种 weight 以保持一致；无原生 LaTeX 包"
+    },
+    {
+      "name": "Lucide",
+      "homepage": "https://lucide.dev/icons/",
+      "license": "ISC (Feather 衍生图标仍遵循 MIT)",
+      "license_url": "https://lucide.dev/license",
+      "latex_package": null,
+      "usage_prompt": "prompt 中写 \"Lucide-style icon\"；细线、2 px stroke",
+      "primary_choice_for": "需要克制线性图标集时的替代；MDX 文档内嵌",
+      "caveats": "1800+ 图标，无彩色/品牌；SVG → PDF 流水线"
+    },
+    {
+      "name": "Heroicons",
+      "homepage": "https://heroicons.com/",
+      "license": "MIT",
+      "license_url": "https://github.com/tailwindlabs/heroicons/blob/master/LICENSE",
+      "latex_package": null,
+      "usage_prompt": "prompt 中写 \"Heroicons outline/solid style\"",
+      "primary_choice_for": "Tailwind 生态内的默认图标集",
+      "caveats": "仅 316 个图标；无品牌/彩色"
+    },
+    {
+      "name": "Material Symbols",
+      "homepage": "https://fonts.google.com/icons",
+      "license": "Apache License 2.0",
+      "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+      "latex_package": null,
+      "usage_prompt": "prompt 中写 \"Material Symbols Outlined/Rounded/Sharp style icon\"",
+      "primary_choice_for": "Google 生态项目；可用字体轴（FILL/wght/GRAD/opsz）调整",
+      "caveats": "Apache 2.0 建议注明；字体变量轴需较新渲染器"
+    },
+    {
+      "name": "Simple Icons",
+      "homepage": "https://simpleicons.org/",
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://github.com/simple-icons/simple-icons/blob/develop/LICENSE.md",
+      "latex_package": null,
+      "usage_prompt": "需要具体公司/产品 Logo（Redis、Kafka、Docker、Postgres）时作为视觉参考",
+      "primary_choice_for": "需要品牌 Logo 的架构图",
+      "caveats": "文件 CC0；但品牌本身属各公司商标，不得用于暗示官方合作"
+    },
+    {
+      "name": "Noto Emoji",
+      "homepage": "https://github.com/googlefonts/noto-emoji",
+      "license": "SIL Open Font License 1.1",
+      "license_url": "https://scripts.sil.org/OFL",
+      "latex_package": "xeCJK + fontspec 或 lualatex + emoji 包",
+      "usage_tikz": "xelatex / lualatex + Noto Color Emoji 字体；Markdown 直接写 UTF-8 emoji",
+      "primary_choice_for": "缺少 fontawesome5 时的 Unicode fallback；或教学图里需要 emoji 的场合",
+      "caveats": "SIL OFL 禁止单独出售字体；emoji 跨平台渲染差异明显"
+    }
+  ]
+}

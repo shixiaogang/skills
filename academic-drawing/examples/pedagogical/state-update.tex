@@ -1,0 +1,247 @@
+\documentclass[tikz,border=4pt]{standalone}
+
+\usepackage{amsmath,bm}
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \IfFontExistsTF{Arial}
+    {\setsansfont{Arial}}
+    {\setsansfont{TeX Gyre Heros}}
+  \IfFileExists{xeCJK.sty}{
+    \usepackage{xeCJK}
+    \IfFontExistsTF{Noto Sans CJK SC}
+      {\setCJKsansfont{Noto Sans CJK SC}}
+      {\IfFontExistsTF{PingFang SC}{\setCJKsansfont{PingFang SC}}{\setCJKsansfont{FandolHei-Regular.otf}[BoldFont=FandolHei-Bold.otf]}}
+  }{}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage[scaled=0.92]{helvet}
+\fi
+\renewcommand{\familydefault}{\sfdefault}
+
+\usetikzlibrary{
+  arrows.meta,
+  backgrounds,
+  calc,
+  fit,
+  positioning,
+  shapes.geometric
+}
+
+\definecolor{ink}{HTML}{222222}
+\definecolor{muted}{HTML}{5F6368}
+\definecolor{blue}{HTML}{0072B2}
+\definecolor{orange}{HTML}{E69F00}
+\definecolor{green}{HTML}{009E73}
+\definecolor{vermillion}{HTML}{D55E00}
+\definecolor{purple}{HTML}{CC79A7}
+\definecolor{grid}{HTML}{D9DDE1}
+
+% Diagram palettes are separate from categorical data-plot colors above.
+% Select with diagram palette=teal (default), steel, or sage.
+\tikzset{
+  diagram palette/.is choice,
+  diagram palette/teal/.code={
+    \definecolor{diagram input}{HTML}{42658A}
+    \definecolor{diagram model}{HTML}{267D82}
+    \definecolor{diagram output}{HTML}{233342}
+    \definecolor{diagram training}{HTML}{A66A25}
+    \definecolor{diagram wire}{HTML}{64717B}
+  },
+  diagram palette/steel/.code={
+    \definecolor{diagram input}{HTML}{6F7F8F}
+    \definecolor{diagram model}{HTML}{3F668A}
+    \definecolor{diagram output}{HTML}{475560}
+    \definecolor{diagram training}{HTML}{B06C2C}
+    \definecolor{diagram wire}{HTML}{64717B}
+  },
+  diagram palette/sage/.code={
+    \definecolor{diagram input}{HTML}{6D7972}
+    \definecolor{diagram model}{HTML}{526F62}
+    \definecolor{diagram output}{HTML}{3F5B51}
+    \definecolor{diagram training}{HTML}{A05D4B}
+    \definecolor{diagram wire}{HTML}{66736B}
+  },
+  diagram palette/.default=teal,
+  diagram palette=teal
+}
+
+\tikzset{
+  every picture/.style={
+    >={Latex[length=2.2mm,width=1.5mm]},
+    font=\sffamily\fontsize{8}{9.6}\selectfont
+  },
+  block/.style={
+    rectangle,
+    rounded corners=1.2mm,
+    draw=diagram model,
+    fill=diagram model!12,
+    line width=0.8pt,
+    minimum width=24mm,
+    minimum height=9mm,
+    align=center,
+    inner xsep=2mm,
+    inner ysep=1.2mm
+  },
+  process/.style={
+    block
+  },
+  input/.style={
+    block,
+    draw=diagram input,
+    fill=diagram input!8
+  },
+  output/.style={
+    block,
+    draw=diagram output,
+    fill=diagram output!8
+  },
+  training/.style={
+    block,
+    draw=diagram training,
+    fill=diagram training!8
+  },
+  start/.style={
+    input,
+    rounded corners=4mm
+  },
+  decision/.style={
+    diamond,
+    aspect=2.2,
+    draw=diagram wire,
+    fill=white,
+    line width=0.8pt,
+    align=center,
+    inner sep=1.2mm
+  },
+  tensor/.style={
+    rectangle,
+    draw=diagram input,
+    fill=diagram input!8,
+    line width=0.8pt,
+    minimum width=20mm,
+    minimum height=7mm,
+    align=center
+  },
+  store/.style={
+    cylinder,
+    shape border rotate=90,
+    aspect=0.28,
+    draw=diagram wire,
+    fill=white,
+    line width=0.8pt,
+    minimum width=19mm,
+    minimum height=11mm,
+    align=center
+  },
+  operator/.style={
+    circle,
+    draw=diagram model,
+    fill=white,
+    line width=0.8pt,
+    minimum size=5.5mm,
+    inner sep=0pt
+  },
+  group/.style={
+    rectangle,
+    rounded corners=1.5mm,
+    draw=muted,
+    dashed,
+    line width=0.7pt,
+    inner sep=3mm
+  },
+  connector/.style={
+    rounded corners=1.2mm
+  },
+  flow/.style={
+    connector,
+    ->,
+    draw=diagram wire,
+    line width=1.1pt
+  },
+  secondary flow/.style={
+    connector,
+    ->,
+    draw=diagram wire,
+    line width=0.8pt
+  },
+  optional flow/.style={
+    secondary flow,
+    dashed
+  },
+  training flow/.style={
+    connector,
+    ->,
+    draw=diagram training,
+    line width=1.1pt,
+    dashed
+  },
+  skip/.style={
+    secondary flow
+  },
+  junction/.style={
+    circle,
+    draw=none,
+    fill=diagram wire,
+    minimum size=1mm,
+    inner sep=0pt
+  },
+  reference/.style={
+    connector,
+    draw=diagram wire,
+    line width=0.7pt,
+    dotted
+  },
+  inhibition/.style={
+    connector,
+    -{Bar[width=2.2mm]},
+    draw=diagram wire,
+    line width=1.0pt
+  },
+  edge label/.style={
+    fill=white,
+    text=muted,
+    inner sep=1pt,
+    font=\sffamily\fontsize{7}{8.4}\selectfont
+  },
+  panel label/.style={
+    anchor=north west,
+    text=ink,
+    font=\sffamily\bfseries\fontsize{10}{12}\selectfont
+  }
+}
+
+
+\tikzset{
+  heading/.style={anchor=west,font=\sffamily\bfseries\fontsize{9}{11}\selectfont,text=ink},
+  colhead/.style={font=\sffamily\fontsize{7}{8.5}\selectfont,text=muted},
+  cell/.style={rectangle,draw=diagram output,fill=diagram output!8,line width=.8pt,
+    minimum width=10mm,minimum height=8mm,inner sep=0pt},
+  note/.style={font=\sffamily\fontsize{7}{8.5}\selectfont,text=ink,align=center}
+}
+\begin{document}
+\begin{tikzpicture}[x=1mm,y=1mm,diagram palette=teal]
+
+\path[use as bounding box] (0,0) rectangle (174,-136);
+\node[heading] at (2,-4) {表示较弱：状态和动作混排，数值埋在操作框中};
+\node[note] at (87,-14) {$L(w)=\tfrac12(w-3)^2$，步长 $\eta=0.5$};
+\node[input,minimum width=42mm,minimum height=16mm] (p1) at (24,-32) {参数\\$w=1$};
+\node[process,minimum width=37mm,minimum height=16mm] (g1) at (84,-32) {计算梯度\\$g=w-3=-2$};
+\node[process,minimum width=48mm,minimum height=16mm] (u1) at (146,-32) {更新参数\\$w\leftarrow w-0.5g=2$};
+\draw[flow] (p1.east)--(g1.west); \draw[flow] (g1.east)--(u1.west);
+
+\node[heading] at (2,-61) {改进表示：分开当前状态、更新输入与下一状态};
+\node[input,minimum width=28mm,minimum height=15mm] (p2) at (18,-91) {当前状态\\$w^{(0)}=1$};
+\node[process,minimum width=34mm,minimum height=15mm] (g2) at (67,-91) {计算梯度\\$g^{(0)}=1-3=-2$};
+\node[process,minimum width=35mm,minimum height=15mm] (u2) at (113,-91) {更新\\$1-0.5(-2)$};
+\node[output,minimum width=27mm,minimum height=15mm] (p3) at (158,-91) {下一状态\\$w^{(1)}=2$};
+\draw[flow] (p2.east)--(g2.west);
+\draw[training flow] (g2.east)--(u2.west);
+\draw[flow] (u2.east)--(p3.west);
+\draw[flow] (p2.south)--(18,-113)--node[edge label] {当前值 $w^{(0)}$}(113,-113)--(u2.south);
+\node[note] at (87,-74) {$w^{(t+1)}=w^{(t)}-\eta g^{(t)}$};
+\node[note] at (87,-126) {实线：参数值\qquad 赭橙虚线：梯度信号};
+\node[note,anchor=south east] at (172,-135) {教学构造；只展开一次更新};
+
+\end{tikzpicture}
+\end{document}
