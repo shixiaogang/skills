@@ -1,254 +1,133 @@
+% Academic-drawing TikZ template — Lancet 2024-07 palette, 思源黑体 Medium + 霞鹜文楷.
+% Lightweight weights, icon color matches node border, minimal titles.
 \documentclass[tikz,border=4pt]{standalone}
 
+\usepackage{bm}
+\usepackage{amsmath}
 \usepackage{iftex}
-\ifXeTeX
-  \usepackage{fontspec}
-  \IfFontExistsTF{Arial}
-    {\setsansfont{Arial}}
-    {\setsansfont{TeX Gyre Heros}}
-  \IfFileExists{xeCJK.sty}{
-    \usepackage{xeCJK}
-    \IfFontExistsTF{Noto Sans CJK SC}
-      {\setCJKsansfont{Noto Sans CJK SC}}
-      {\IfFontExistsTF{PingFang SC}{\setCJKsansfont{PingFang SC}}{}}
-  }{}
-\else
-  \usepackage[T1]{fontenc}
-  \usepackage[scaled=0.92]{helvet}
-\fi
+\usepackage{fontspec}
+\usepackage{xeCJK}
+
+% ---------- Fonts ----------
+% Node titles use 思源黑体 Medium (not Bold), descriptions use 霞鹜文楷.
+\setmainfont{Source Han Sans SC}[Scale=0.95]
+\setsansfont{Source Han Sans SC}[Scale=0.95]
+\setCJKmainfont{Source Han Sans SC}
+\setCJKsansfont{Source Han Sans SC}
+\newfontfamily\sanssemibold{Source Han Sans SC Medium}
+\newCJKfontfamily\sanssemiboldcjk{Source Han Sans SC Medium}
+\newfontfamily\wenkai{LXGW WenKai}
+\newCJKfontfamily\wenkaicjk{LXGW WenKai}
 \renewcommand{\familydefault}{\sfdefault}
+\XeTeXlinebreaklocale "zh"
 
-\usetikzlibrary{
-  arrows.meta,
-  backgrounds,
-  calc,
-  fit,
-  positioning,
-  shapes.geometric
-}
+\IfFileExists{fontawesome5.sty}{\usepackage{fontawesome5}}{}
 
-\definecolor{ink}{HTML}{222222}
-\definecolor{muted}{HTML}{5F6368}
-\definecolor{blue}{HTML}{0072B2}
-\definecolor{orange}{HTML}{E69F00}
-\definecolor{green}{HTML}{009E73}
-\definecolor{vermillion}{HTML}{D55E00}
-\definecolor{purple}{HTML}{CC79A7}
-\definecolor{grid}{HTML}{D9DDE1}
+\usetikzlibrary{arrows.meta,backgrounds,calc,fit,positioning,shapes.geometric,shapes.misc,decorations.pathreplacing,decorations.markings}
 
-% Diagram palettes are separate from categorical data-plot colors above.
-% Select with diagram palette=teal (default), steel, sage, or publication-pastel.
+% ---------- Lancet 2024-07 palette ----------
+\definecolor{lcBlue}{HTML}{7B95C6}    % client / user
+\definecolor{lcCyan}{HTML}{49C2D9}    % api / gateway
+\definecolor{lcIce}{HTML}{A1D8E8}     % input / tensor
+\definecolor{lcTeal}{HTML}{67A583}    % database
+\definecolor{lcGrass}{HTML}{A2C986}   % compute
+\definecolor{lcMint}{HTML}{D0E2C0}    % neutral / env
+\definecolor{lcCream}{HTML}{FDED95}   % queue / event
+\definecolor{lcPeach}{HTML}{FFC1A6}   % observability
+\definecolor{lcCoral}{HTML}{F59C7C}   % warn / caution
+\definecolor{lcTomato}{HTML}{F47254}  % risk / error
+\definecolor{lcRose}{HTML}{C85E62}    % feedback / loss
+
+\definecolor{ink}{HTML}{3B4252}       % node title
+\definecolor{muted}{HTML}{6B7280}     % description, arrows, edge labels
+\definecolor{paper}{HTML}{FFFFFF}
+\definecolor{wire}{HTML}{6B7280}
+
+% ---------- Node styles (role boxes, pills, badges, arrows) ----------
+% Icon color should match the node border, not black (see diagram-visual-style.md).
 \tikzset{
-  diagram palette/.is choice,
-  diagram palette/teal/.code={
-    \definecolor{diagram input}{HTML}{42658A}
-    \definecolor{diagram model}{HTML}{267D82}
-    \definecolor{diagram output}{HTML}{233342}
-    \definecolor{diagram training}{HTML}{A66A25}
-    \definecolor{diagram wire}{HTML}{64717B}
-  },
-  diagram palette/steel/.code={
-    \definecolor{diagram input}{HTML}{6F7F8F}
-    \definecolor{diagram model}{HTML}{3F668A}
-    \definecolor{diagram output}{HTML}{475560}
-    \definecolor{diagram training}{HTML}{B06C2C}
-    \definecolor{diagram wire}{HTML}{64717B}
-  },
-  diagram palette/sage/.code={
-    \definecolor{diagram input}{HTML}{6D7972}
-    \definecolor{diagram model}{HTML}{526F62}
-    \definecolor{diagram output}{HTML}{3F5B51}
-    \definecolor{diagram training}{HTML}{A05D4B}
-    \definecolor{diagram wire}{HTML}{66736B}
-  },
-  diagram palette/publication-pastel/.code={
-    \definecolor{diagram input}{HTML}{4B86B4}
-    \definecolor{diagram model}{HTML}{9892AF}
-    \definecolor{diagram output}{HTML}{4C9775}
-    \definecolor{diagram training}{HTML}{CC554B}
-    \definecolor{diagram wire}{HTML}{444444}
-  },
-  diagram palette/.default=teal,
-  diagram palette=teal
+  every picture/.style={>={Latex[length=2.6mm,width=1.8mm]},font=\sffamily\fontsize{9}{11}\selectfont},
+  node card/.style={rectangle,rounded corners=1.6mm,draw,line width=.7pt,fill=white,align=left,inner xsep=2.6mm,inner ysep=2mm,minimum width=34mm,minimum height=13mm},
+  r client/.style={node card,draw=lcBlue,fill=lcBlue!18},
+  r api/.style={node card,draw=lcCyan,fill=lcCyan!22},
+  r input/.style={node card,draw=lcIce,fill=lcIce!30},
+  r database/.style={node card,draw=lcTeal,fill=lcTeal!22},
+  r compute/.style={node card,draw=lcGrass,fill=lcGrass!25},
+  r neutral/.style={node card,draw=lcMint!90!black,fill=lcMint!40},
+  r queue/.style={node card,draw=lcCream!60!black,fill=lcCream!60},
+  r observe/.style={node card,draw=lcPeach!90!black,fill=lcPeach!40},
+  r warn/.style={node card,draw=lcCoral!85!black,fill=lcCoral!35},
+  r risk/.style={node card,draw=lcTomato!85!black,fill=lcTomato!30},
+  r feedback/.style={node card,draw=lcRose,fill=lcRose!25},
+  pill/.style={rounded rectangle,draw,line width=.6pt,inner xsep=1.8mm,inner ysep=.5mm,font=\sanssemibold\fontsize{7}{8}\selectfont,fill=white,text=muted,draw=muted!60},
+  pill client/.style={pill,text=lcBlue!80!black,draw=lcBlue},
+  pill compute/.style={pill,text=lcTeal!80!black,draw=lcTeal},
+  pill service/.style={pill,text=lcGrass!60!black,draw=lcGrass!80!black},
+  pill queue/.style={pill,text=lcCream!30!black,draw=lcCream!50!black},
+  pill risk/.style={pill,text=lcRose!90!black,draw=lcRose},
+  pill api/.style={pill,text=lcCyan!60!black,draw=lcCyan!80!black},
+  badge/.style={circle,draw=none,fill=lcBlue,text=white,minimum size=4.8mm,inner sep=0pt,font=\sanssemibold\fontsize{8}{8}\selectfont},
+  badge blue/.style={badge,fill=lcBlue},
+  badge cyan/.style={badge,fill=lcCyan},
+  badge teal/.style={badge,fill=lcTeal},
+  badge grass/.style={badge,fill=lcGrass!80!black},
+  badge coral/.style={badge,fill=lcCoral!90!black},
+  badge rose/.style={badge,fill=lcRose},
+  figtitle/.style={anchor=south west,text=ink,font=\sanssemiboldcjk\fontsize{11}{14}\selectfont},
+  figcaption/.style={anchor=north west,text=muted,font=\wenkaicjk\fontsize{8}{10}\selectfont},
+  flow/.style={->,draw=wire,line width=.9pt,rounded corners=.8mm},
+  secondary/.style={->,draw=muted,line width=.7pt,rounded corners=.8mm},
+  dashflow/.style={->,draw=muted,line width=.75pt,rounded corners=.8mm,densely dashed},
+  feedback flow/.style={->,draw=lcRose,line width=.9pt,rounded corners=1.2mm,densely dashed},
+  edge label/.style={fill=white,text=muted,inner sep=1pt,font=\wenkaicjk\fontsize{7.5}{9}\selectfont}
 }
 
-\tikzset{
-  every picture/.style={
-    >={Latex[length=2.2mm,width=1.5mm]},
-    font=\sffamily\fontsize{8}{9.6}\selectfont
-  },
-  block/.style={
-    rectangle,
-    rounded corners=1.2mm,
-    draw=diagram model,
-    fill=diagram model!12,
-    line width=0.8pt,
-    minimum width=24mm,
-    minimum height=9mm,
-    align=center,
-    inner xsep=2mm,
-    inner ysep=1.2mm
-  },
-  process/.style={
-    block
-  },
-  input/.style={
-    block,
-    draw=diagram input,
-    fill=diagram input!8
-  },
-  output/.style={
-    block,
-    draw=diagram output,
-    fill=diagram output!8
-  },
-  training/.style={
-    block,
-    draw=diagram training,
-    fill=diagram training!8
-  },
-  start/.style={
-    input,
-    rounded corners=4mm
-  },
-  decision/.style={
-    diamond,
-    aspect=2.2,
-    draw=diagram wire,
-    fill=white,
-    line width=0.8pt,
-    align=center,
-    inner sep=1.2mm
-  },
-  tensor/.style={
-    rectangle,
-    draw=diagram input,
-    fill=diagram input!8,
-    line width=0.8pt,
-    minimum width=20mm,
-    minimum height=7mm,
-    align=center
-  },
-  store/.style={
-    cylinder,
-    shape border rotate=90,
-    aspect=0.28,
-    draw=diagram wire,
-    fill=white,
-    line width=0.8pt,
-    minimum width=19mm,
-    minimum height=11mm,
-    align=center
-  },
-  operator/.style={
-    circle,
-    draw=diagram model,
-    fill=white,
-    line width=0.8pt,
-    minimum size=5.5mm,
-    inner sep=0pt
-  },
-  group/.style={
-    rectangle,
-    rounded corners=1.5mm,
-    draw=muted,
-    dashed,
-    line width=0.7pt,
-    inner sep=3mm
-  },
-  connector/.style={
-    rounded corners=1.2mm
-  },
-  flow/.style={
-    connector,
-    ->,
-    draw=diagram wire,
-    line width=1.1pt
-  },
-  secondary flow/.style={
-    connector,
-    ->,
-    draw=diagram wire,
-    line width=0.8pt
-  },
-  optional flow/.style={
-    secondary flow,
-    dashed
-  },
-  training flow/.style={
-    connector,
-    ->,
-    draw=diagram training,
-    line width=1.1pt,
-    dashed
-  },
-  skip/.style={
-    secondary flow
-  },
-  junction/.style={
-    circle,
-    draw=none,
-    fill=diagram wire,
-    minimum size=1mm,
-    inner sep=0pt
-  },
-  reference/.style={
-    connector,
-    draw=diagram wire,
-    line width=0.7pt,
-    dotted
-  },
-  inhibition/.style={
-    connector,
-    -{Bar[width=2.2mm]},
-    draw=diagram wire,
-    line width=1.0pt
-  },
-  edge label/.style={
-    fill=white,
-    text=muted,
-    inner sep=1pt,
-    font=\sffamily\fontsize{7}{8.4}\selectfont
-  },
-  panel label/.style={
-    anchor=north west,
-    text=ink,
-    font=\sffamily\bfseries\fontsize{10}{12}\selectfont
-  }
+% ---------- Icon-left node content ----------
+% \icn{icon-pt}{\faXxx}{Title}{Description}{icon-color}
+% Icon color should match the node border, NOT black.
+% Title: 思源黑体 Medium @ 9.4 pt, dark ink.
+% Description: 霞鹜文楷 @ 7.8 pt, muted gray.
+\newcommand{\icn}[5]{%
+  \begin{tabular}{@{}l@{\hspace{1.6mm}}l@{}}%
+    \raisebox{-0.25ex}{\color{#5}\fontsize{#1}{#1}\selectfont #2} &
+    \begin{tabular}[c]{@{}l@{}}%
+      {\sanssemiboldcjk\color{ink}\fontsize{9.4}{11.2}\selectfont #3}\\[0.08em]%
+      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont #4}%
+    \end{tabular}%
+  \end{tabular}%
 }
 
-% Optional surface treatment; select after the palette in the picture options.
-\tikzset{
-  diagram surface/.is choice,
-  diagram surface/publication/.style={
-    block/.append style={draw=ink,fill=diagram model!18,line width=.75pt},
-    input/.append style={draw=ink,fill=diagram input!22},
-    output/.append style={draw=ink,fill=diagram output!20},
-    training/.append style={draw=ink,fill=diagram training!18},
-    tensor/.append style={draw=ink,fill=diagram input!22,line width=.75pt},
-    operator/.append style={draw=ink,line width=.75pt},
-    flow/.append style={line width=.85pt},
-    secondary flow/.append style={line width=.6pt},
-    training flow/.append style={line width=.85pt},
-    group/.append style={draw=muted,line width=.6pt,rounded corners=2mm}
-  },
-  publication panel/.style={rectangle,draw=ink,fill=white,
-    rounded corners=2.5mm,line width=.75pt,inner sep=3mm}
-}
-
+% Prefer the explicit form:
+%   \icn{16}{\faUser}{Title}{Desc}{lcBlue!90!black}
+% for maximum clarity. The role box style sets fill/draw colors; the icon
+% color (last arg of \icn) should match the node border, NOT black.
 \begin{document}
-\begin{tikzpicture}[x=1mm,y=1mm,diagram palette=teal]
-  % Replace this schematic with the verified figure brief.
-  \node[input,minimum width=20mm] (input) at (0,0) {Input};
-  \node[process] (process) at (34,0) {Compute};
-  \node[operator] (add) at (58,0) {$+$};
-  \node[output,minimum width=20mm] (output) at (76,0) {Output};
-  \node[training] (signal) at (34,-22) {Training signal};
 
-  \draw[flow] (input.east) -- node[edge label] {data} (process.west);
-  \draw[flow] (process.east) -- (add.west);
-  \draw[flow] (add.east) -- (output.west);
-  \draw[skip] (input.north) -- (0,12) -- (58,12) -- (add.north);
-  \draw[training flow] (signal.north) -- (process.south);
+\begin{tikzpicture}[x=1mm,y=1mm]
+
+  % --- Example skeleton: minimal pipeline (replace with the verified figure brief) ---
+  % Prefer no title and no side-pill. Only add annotations attached to concrete
+  % nodes / arrows / groups; drop floating labels, legend bars, and author stamps.
+
+  \node[r client,minimum width=30mm,minimum height=14mm] (a) at (14,14)
+    {\icn{16}{\faUser}{Alice}{sends message}{lcBlue!90!black}};
+  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14)
+    {\icn{16}{\faGlobe}{REST API}{receives via HTTP}{lcCyan!65!black}};
+  \node[r queue,minimum width=30mm,minimum height=14mm] (q) at (102,14)
+    {\icn{16}{\faStream}{Kafka}{message topic}{lcCream!30!black}};
+  \node[r compute,minimum width=30mm,minimum height=14mm] (c) at (146,14)
+    {\icn{16}{\faUser}{Bob}{gets delivery}{lcGrass!65!black}};
+
+  \draw[flow] (a.east) -- (b.west);
+  \node[badge blue] at (36,14) {1};
+  \draw[flow] (b.east) -- (q.west);
+  \node[badge grass] at (80,14) {2};
+  \draw[flow] (q.east) -- (c.west);
+  \node[badge coral] at (124,14) {3};
+
+  \node[r database,minimum width=30mm,minimum height=14mm] (db) at (58,-6)
+    {\icn{16}{\faDatabase}{Message DB}{persists message}{lcTeal!80!black}};
+  \draw[secondary] (b.south) -- (db.north);
+
 \end{tikzpicture}
 \end{document}

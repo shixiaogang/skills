@@ -1,0 +1,18 @@
+# Local output artifacts (demos, scratch renders, generated figures)
+outputs/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.fdb_latexmk
+*.fls
+*.out
+*.synctex.gz
+*.toc
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
