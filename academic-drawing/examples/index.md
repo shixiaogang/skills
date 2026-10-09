@@ -14,7 +14,7 @@
 本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 找近年顶会的 Figure 1 / teaser 作为参考——该库收录 ICLR / ICML / NeurIPS / CVPR / ACL / AAAI 2023-2026 的首图，按 **conceptual / framework / pipeline / architecture / taxonomy / teaser** 六类打标签，可直接按版式筛选。
 
 - 在线浏览与筛选：https://qwdwqfwq.github.io/topconf-paper-figure-gallery/
-- 使用方式：挑 1-2 张结构或气质相近的图，**只借布局、分组节奏、文字层次**（见 [diagram-design §二](../references/diagram/diagram-design.md#二准备参考图)、[diagram-render §三](../references/diagram/diagram-render.md#三按版式用-tikz-实现)）；视觉元素（色板、字体、线型）仍按 [diagram-design §四](../references/diagram/diagram-design.md#四视觉规格权威规格) 的 Lancet 2024-07 + 思源黑体 Medium + 霞鹜文楷落地，不复刻原图配色和装饰。
+- 使用方式：挑 1-2 张结构或气质相近的图，**只借布局、分组节奏、文字层次**（见 [diagram-design §三](../references/diagram/diagram-design.md#三参考图使用方式)、[diagram-render §三](../references/diagram/diagram-render.md#三按版式用-tikz-实现)）；视觉元素（色板、字体、线型）仍按 [diagram-render §4.2](../references/diagram/diagram-render.md#42-视觉规格tikz-落地) 的 Lancet 2024-07 + 思源黑体 Medium + 霞鹜文楷落地，不复刻原图配色和装饰。
 - 使用边界：仅做设计方向参考；图里的科学内容、精确标签、机制细节不作为当前任务的事实来源。注意该库图片属于原作者和出版商，72 小时下架政策下别把参考图当作可商用素材。
 
 本地 examples/ 作为"已核验、带借鉴注记"的小而精选集，外部库作为"覆盖面广、随新论文滚动更新"的广谱底库——两者互补。

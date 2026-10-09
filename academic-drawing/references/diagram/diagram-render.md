@@ -1,6 +1,6 @@
 # 框架图渲染（diagram-render）—— 流水线第 ②步：TikZ 还原
 
-**本步是流水线的主交付环节**，把 [diagram-design](diagram-design.md) 产出的 PNG 设计稿还原成**可编辑的矢量图**。本步不是另起炉灶，而是**对照设计稿**在 TikZ 里重建版式、节点、连线、文字，使其既符合 [diagram-design §四](diagram-design.md#四视觉规格权威规格) 的视觉语言，又保持与设计稿一致的气质。
+**本步是流水线的主交付环节**，把 [diagram-design](diagram-design.md) 产出的 PNG 设计稿还原成**可编辑的矢量图**。本步不是另起炉灶，而是**对照设计稿**在 TikZ 里重建版式、节点、连线、文字，使其既符合 [§4.2 视觉规格（TikZ 落地）](#42-视觉规格tikz-落地) 的硬规格，又保持与设计稿一致的气质。
 
 TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面、独特图标）按 [§二 方案三选一](#二方案三选一处理不可实现元素) 决定——复用矢量图标 / 裁剪设计稿 / 请模型重新生成局部 PNG，用 `\includegraphics` 嵌入 TikZ 版面；外壳的节点、连线、文字、分组仍由 TikZ 维护。
 
@@ -104,7 +104,7 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 
 ## 三、按版式用 TikZ 实现
 
-设计稿已经给出大致版式。按设计稿观察到的结构，对照下表选具体 TikZ 布局方案。四类版式按读者问题选，每类对应一组布局方案。每一节都给出本地 [examples/](../../examples/) 的参考图目录；本地库之外，也可以在 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 按 conceptual / framework / pipeline / architecture / taxonomy / teaser 标签筛选近年顶会的 Figure 1 作为灵感——只借布局和分组节奏，视觉元素仍按 [diagram-design §四](diagram-design.md#四视觉规格权威规格) 落地。
+设计稿已经给出大致版式。按设计稿观察到的结构，对照下表选具体 TikZ 布局方案。四类版式按读者问题选，每类对应一组布局方案。每一节都给出本地 [examples/](../../examples/) 的参考图目录；本地库之外，也可以在 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 按 conceptual / framework / pipeline / architecture / taxonomy / teaser 标签筛选近年顶会的 Figure 1 作为灵感——只借布局和分组节奏，视觉元素仍按 [§4.2 视觉规格（TikZ 落地）](#42-视觉规格tikz-落地) 落地。
 
 ### 3.1 架构图
 
@@ -260,6 +260,222 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
 - 文件 License 可追溯：裁剪自设计稿的 PNG 继承设计稿的来源与 prompt 记录；模型补生成的 PNG 单独记录 prompt。
 
 **混合渲染不满足"真矢量"要求**：如果用户明确要求无位图的纯矢量 PDF/SVG，不能走混合渲染；要么退回 §2.1 用矢量图标代替，要么降低信息密度/换表示方式。
+
+### 4.2 视觉规格（TikZ 落地）
+
+本节是框架图所有视觉元素的**权威规格**，由 TikZ 还原时按 [tikz_template.tex](../../templates/tikz_template.tex) 落地；设计稿不负责这些精确数值。数值参数是最终排版尺寸下的试排起点，目标期刊或用户要求优先。本 skill 的「样式对齐硬约束」入口是本节 + 文件头部的"样式对齐硬约束"段。
+
+#### 4.2.1 骨架
+
+- 底色是纯白或极浅灰。标题是**可选**的：图能靠节点、分组和色彩自解释时不加大标题；需要上下文才加一行节点级标题，字重轻、不喧宾夺主。
+- **只保留贴附在元素上的注解**：节点标题、节点描述、箭头上的边标签、分组边界上的分组名。**脱离具体节点、连线或分组的游离注解一律删除**——不写与图内重复的副标题、独立说明段、画布左侧的游离小标签、底部的"xx 色=yy"图例条、角上的作者/日期戳。
+- 每个节点是圆角矩形或药丸形，有描边（0.6-0.9 pt，细线不加粗）配 pastel 填充；节点内是**节点标题 + 一行描述**。图标是**可选**辅助——有助于区分角色或增强教学感时可以加（置于标题左侧或顶部，与描边同色、不用黑色）。
+- 颜色承担类别或状态语义，并在同图内保持稳定；相同语义使用相同色相，不同语义不共用一个色相。
+- 流程线是中性深灰的实心细箭头（0.8-1.1 pt，Latex 大头尺寸 2.4-2.8 mm）；主流程不用虚线，分支或可选关系才用虚线。整体字重和线重都偏轻盈。
+- 顺序流程可伴随小号彩色编号圆点（4-6 mm，循环色相），直接贴在箭头旁边标出步骤号；步骤数清晰或箭头方向已自明时允许省略。
+- 并行或对照结构改用卡片并排 + 色条标题。
+- 整体气质像杂志配图或 technical newsletter，而非幻灯片封面。
+
+目标媒介是黑白印刷或要求纯线稿时，调低饱和度到接近灰阶、保留节点形状，仍保持上述骨架。
+
+**什么能保留，什么要删**：
+
+| 元素 | 判断 | 处理 |
+|---|---|---|
+| 节点内标题 + 描述（图标按需） | 贴附在节点上 | 保留 |
+| 箭头上的边标签（如 "动作 $a_t$"、"记录"） | 贴附在连线上 | 保留 |
+| 分组边界 + 分组名（如虚线框 + "参与方 1"） | 贴附在分组上 | 保留 |
+| 节点上的编号圆点 | 贴附在连线/节点上 | 保留 |
+| 画布大标题 + 封面级副标题 | 游离，与图内重复 | 删除；真需要上下文时留一行节点级标题 |
+| 侧边的"TRAIN" / "META-TRAIN" / "POLICY LOOP" 小标签 | 游离，和下方节点组所传达的信息重复 | 删除；需要分段时用节点组本身的位置和色彩表达 |
+| 底部"蓝=客户端、绿=服务"的类别图例条 | 游离，颜色语义已在节点上 | 删除；类别信息改到节点自身讲清 |
+| 画布角上的"图 N"、"xx 流程图" 等 | 游离，正文或图注承担 | 删除；交给图注 |
+
+#### 4.2.2 节点语义色板
+
+默认使用 **Lancet 2024-07** 调色板（来源 [AMFE 科研配色](https://color.amfe.space/palette/106)）。11 色按色相排序，角色映射把每个语义绑定到一个主色（Border + 图标）和一个浅底（Fill = 该主色 ≈ 18-25% 透明度）：
+
+```text
+Role            Main (Border/Icon)  Fill tint    语义示例
+client / user   #7B95C6 蓝          #7B95C6!18   客户端、用户、输入
+api / gateway   #49C2D9 青          #49C2D9!22   REST、gRPC、Gateway
+input / tensor  #A1D8E8 浅青        #A1D8E8!30   输入块、嵌入、张量
+database        #67A583 墨绿        #67A583!22   持久化、OLTP、冷存储
+compute         #A2C986 嫩绿        #A2C986!25   模型、推理、本地训练
+neutral / env   #D0E2C0 浅绿        #D0E2C0!40   环境、说明、Legend
+queue / event   #FDED95 浅黄        #FDED95!60   消息队列、PE、时序
+observability   #FFC1A6 浅橙        #FFC1A6!40   日志、监控、追踪
+warn / caution  #F59C7C 中橙        #F59C7C!35   警告、风险输入、异常
+risk / error    #F47254 橙红        #F47254!30   失败、过期、禁区
+feedback        #C85E62 玫红        #C85E62!25   反馈、更新、损失
+```
+
+**用色准则**：
+
+- 节点填充用主色的 20% 左右透明度，描边、图标、节点标题（当需要彩色标题时）都用对应主色。图标**不是黑色**，与节点同色相融，整体轻盈。
+- Lancet 2024-07 的相邻色（蓝→青→浅青、墨绿→嫩绿→浅绿）需要用形状、图标或留白区分，不要连续三节点都走绿系。
+- 允许同图使用 4-7 种类别色；每层换色却没有语义时，减少色彩竞争。
+- 通过位置、标签、形状或线型辅助识别，不能靠色相承担全部含义。
+- 文字默认深墨 `#3B4252`，描述文字默认中灰 `#6B7280`；强调用 feedback 色 `#C85E62` 或 risk 色 `#F47254`。
+- 其他期刊专用色板（Nature、Science、JAMA 等）在用户明确指定时覆盖本节；覆盖时整图所有节点与箭头颜色一起更换，不混用两套色板。
+
+数据图配色独立，见 [chart-draw](../chart/chart-draw.md) 配色小节。
+
+#### 4.2.3 节点与卡片样式
+
+| 卡片类型 | 结构 | 适用 |
+|---|---|---|
+| 标准节点 | 标题（粗 10-12 pt）+ 下描述（细 8-9 pt）；浅底 + 深描边 | 服务、模块、功能节点；最常用的默认形态 |
+| 带图标节点 | 左图标 24-32 px + 右标题 + 下描述 | 架构图、教学配图里，用图标帮助区分角色（可选） |
+| 顶色条卡片 | 顶部色条 6-10 mm + 色条内白色加粗标题 + 卡片内描述文字（+ 可选 bullet） | 对比卡（Option A/B）、分区标题 |
+
+实现要点：
+
+- 节点最小内边距 `inner xsep=3mm, inner ysep=2mm`；标题到描述间 `0.6em` 行距。
+- 加图标时，图标占高度 30-40%，不塞满整格；颜色与节点描边一致，不是黑色。
+- 不加图标时，用更大的标题字号或色条顶条提升节点辨识度，避免整图退化为无差别方框。
+- 卡片宽度统一到 2-3 档；并列节点保持等高。
+- 顶部色条用深色，色条内文字白色；卡片本体是浅色。
+- 装饰阴影默认不加；需要立体感时用 1-2 mm 浅灰偏移块，不用高斯阴影。
+
+#### 4.2.4 图标（代码路径）
+
+图标是节点的辅助元素，不是必备。TikZ 侧用 `\usepackage{fontawesome5}`，调用 `\faDatabase`、`\faServer`、`\faCloud` 等。图标颜色设为**节点描边同色**（不是默认黑色），用 `{\color{<role border>}\fontsize{16}{16}\selectfont \faDatabase}` 的方式控制；可用名列表见 [图标资产](../../assets/icons/README.md)。
+
+**Material Icons → fontawesome5 映射**：[diagram-design](diagram-design.md) 的 prompt 用 Google Material Icons 的语义名（例如 `person`、`cloud`、`database`、`settings`、`play_arrow`），因为图像模型更熟悉这套命名；TikZ 还原时在代码里**映射到最接近的 `fontawesome5` 命令**（Material Icons 没有 TeXLive 包）。常见映射：
+
+```text
+Material Icon            →  fontawesome5
+person / account_circle  →  \faUser
+devices / laptop         →  \faLaptop
+settings / build         →  \faCogs
+storage                  →  \faDatabase
+bolt / memory            →  \faBolt / \faMemory
+share / fork_right       →  \faStream / \faShareNodes
+public / router          →  \faGlobe / \faNetworkWired
+notifications            →  \faBell
+monitoring / show_chart  →  \faChartLine
+visibility               →  \faEye
+cloud                    →  \faCloud
+smartphone               →  \faMobileScreen
+folder / description     →  \faFolder / \faFileLines
+code / terminal          →  \faCode / \faTerminal
+psychology / smart_toy   →  \faBrain / \faRobot
+lock / shield            →  \faLock / \faShield
+input                    →  \faSignInAlt
+play_arrow               →  \faPlay
+merge_type               →  \faCodeBranch
+category                 →  \faThLarge
+```
+
+未安装 fontawesome5 时 fallback 使用 Unicode 符号，但 Unicode 不是首选；缺字时在图注说明近似。
+
+#### 4.2.5 线条层级
+
+| 元素 | 代码试排线宽 | 用法 |
+|---|---:|---|
+| 节点描边 | 0.6-0.9 pt | 用节点主色，细线保持轻盈 |
+| 主流程箭头 | 0.8-1.1 pt | 中性深灰 `#6B7280`，不用黑色 |
+| 反馈/更新 | 0.9-1.0 pt dashed | Lancet 玫红 `#C85E62`，表示回路 |
+| 次要连接 | 0.6-0.8 pt | 中灰 `#6B7280!60`，无箭头或端点为小圆 |
+| 分支/可选关系 | 0.7-0.9 pt dashed | 虚线段 2 mm 实 1.6 mm 空 |
+| 卡片顶部色条 | 填充色块，无描边 | 色条高度 5-8 mm |
+
+**线型语义**：
+
+```text
+solid     确定关系、实际计算与数据路径
+dashed    可选、间接或训练反馈等需区分的关系；每图明确一种含义
+dotted    参考线、预测、假设或待验证关系
+dash-dot  第三个数据系列；只在确有需要时使用
+```
+
+- 默认主流程全部实线，分支/可选用虚线。不把全部关系改成虚线。
+- 相同线型在同一张图中只表达一种关系。
+- 主次优先用线宽和深浅区分；不因为路径处于次要层级就自动改为虚线。
+
+#### 4.2.6 箭头与连接
+
+- 默认 Latex 大头箭头（`Latex[length=2.6mm,width=1.8mm]`），实心、填充与线色相同；颜色用中性深灰 `#6B7280`，不是纯黑。
+- 连线主流程走正交折线（水平段 + 竖直段），转角用 `rounded corners=0.8mm`，不走对角线。
+- 分支/循环/反馈可用弧线，使用 `to[bend left=20]` 等软曲线；避免 S 形两段弧。
+- 箭头不得穿过节点、文字、面板标签或其他箭头标签。
+- 尽量消除交叉；无法消除时改变布局；关系过密且不可重排时才用明确的跨线桥。
+- 共享起点的分支使用一致的出口、间距和转折位置。
+- 用箭头表示方向，用无箭头线表示无向关联，用双箭头表示确实双向的关系（请求+响应 ≠ 一条双向线），用钝端或 T 形端点表示抑制。
+- 两线交叉不自动表示汇合；真实汇合与单纯跨越必须可区分，只有确有连接语义时才加汇合点。
+- Badge 圆点和边标签不要盖在同一位置：badge 贴近箭头起点或终点，边标签放在箭头中段上方 1-2 mm。
+
+#### 4.2.7 编号圆点
+
+顺序流程图用小号彩色实心圆点显示步骤号：
+
+- 圆直径 4-6 mm，填充按 Lancet 调色板循环（蓝→嫩绿→浅橙→玫红→墨绿）。
+- 圆内数字白色思源黑体 Medium，字号 8-9 pt。
+- 圆点贴在箭头的中段或起点旁，距离箭头线和边标签至少 1.5 mm，不要互相遮挡。
+- 不超过 9 步；超过要么分段，要么用字母 A/B/C 替代，不用两位数字。
+
+#### 4.2.8 字体与标签
+
+**字族**：
+
+- **节点标题**：**思源黑体 Medium**（Source Han Sans SC Medium）。字重用 Medium 而非 Bold，整体轻盈不臃肿。英文可用 Inter / Helvetica Medium。
+- **节点描述 / 边标签 / 分组名**：**霞鹜文楷**（LXGW WenKai）Regular，颜色用中灰 `#6B7280`。手写体感的衬线笔画，和思源黑体的现代几何感形成对比。
+- **编号圆点**：思源黑体 Medium，白字实心背景。
+- 其他数学符号、变量、公式仍走 LaTeX 数学字体（`\bm{\theta}` 等）；中文和西文混排时 `xeCJK` 自动切换。
+
+| 元素 | 默认字号 | 字族 |
+|---|---:|---|
+| 可选节点级标题 | 10-12 pt | 思源黑体 Medium |
+| 节点标题 | 9-10 pt | 思源黑体 Medium，与描边同色或深墨 |
+| 节点描述 | 7.5-8.5 pt | 霞鹜文楷 Regular，中灰 |
+| 边标签 / 分组名 | 7.5-8 pt | 霞鹜文楷 Regular，中灰 |
+| 编号圆点 | 8-9 pt | 思源黑体 Medium，白字 |
+| 建议避免低于 | 6 pt | — |
+
+- 字号层级保持少而清楚，通常 3-4 档。
+- 标签不能依赖颜色名称（用"Treatment A"而不是"红线"）。
+- fontspec 示例：
+
+```latex
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont{Source Han Sans SC}
+\newCJKfontfamily\sanssemiboldcjk{Source Han Sans SC Medium}
+\newCJKfontfamily\wenkaicjk{LXGW WenKai}
+```
+
+#### 4.2.9 布局与构图
+
+**画布与阅读方向**：
+
+- 先确定最终画布、面板比例和图注位置，再用实际标签安排对象。
+- 整图通常横向，宽高比约 3:2 到 16:9；默认画布宽度 150-200 mm。
+- 未指定目标时以约 90 mm 单栏或 180 mm 双栏宽度试排。
+- 顶部主标题留 12-16 mm 空白；底部图例/时间轴留 10-14 mm 空白；节点组之间留 10-14 mm 空白。
+
+**网格与对齐**：同层对象对齐共享边缘、中心线或文字基线；一个对象不要同时服从多个互相冲突的对齐。框、文字、图标和连接端口是同一布局单元。网格用于建立节奏，不要求所有区域机械等分。
+
+**留白与分组**：保留能够隔离视觉焦点、区分组别的留白；消除未裁切画布、远置图例、不一致间距造成的无意义空白。可用邻近、留白、底板或边框表达分组；表示系统、安全或区室边界时必须对应真实归属。
+
+**视觉层级**：每个面板围绕一个核心信息；核心对象位于阅读路径上的高优先位置并获得足够邻近留白。多个强色、大标题、粗边框和粗箭头互相争夺注意时，减少竞争或重新安排重点。
+
+**端口与避让**：同侧多条独立连接各用一个可辨认的端口，在可用直边长度内均匀分配。并行独立线路保持可见间隙。先放语义底板，再画连线、节点及文字，并检查实际遮挡。
+
+#### 4.2.10 可访问性
+
+- 不以颜色作为唯一区分手段；至少再使用直接标签、点形、线型、位置或纹理之一。
+- 优先直接标注数据线或对象，避免读者在图与远处图例间反复匹配颜色。
+- 重要图形对象对比 3:1、小字 4.5:1 作为参考，以最终媒介和实际阅读为准。
+- 检查灰度；关键区分依赖色彩时再做 protanopia / deuteranopia / tritanopia 模拟。
+
+#### 4.2.11 视觉规格来源
+
+- [Science Guide to Preparing Figures](https://www.science.org/cms/asset/6ebc81c2-e38a-4cea-b0c2-a0402817f13e/author_prep_guide_2025.pdf)
+- [IEEE Create Graphics for Your Article](https://journals.ieeeauthorcenter.ieee.org/create-your-ieee-journal-article/create-graphics-for-your-article/)
+- [Color Universal Design](https://jfly.uni-koeln.de/color/)
+- [W3C Non-text Contrast](https://www.w3.org/WAI/WCAG21/Understanding/non-text-contrast)
+- [System Design Classroom newsletter](https://newsletter.systemdesignclassroom.com/) 与 [ByteByteGo blog](https://blog.bytebytego.com/) — 节点视觉样式实例
 
 ---
 

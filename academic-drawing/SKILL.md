@@ -41,8 +41,8 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 
 **路径说明**：
 
-- **① 设计（diagram-design）**：描述场景、事实清单、视觉要求、参考图品质喂给图像大模型，让模型自主决定构图、分组节奏、色彩比例、形状；输出 PNG **设计稿**作为中间产物（含完整 prompt 记录）；对设计稿做初步事实与视觉检查，通过后再进入第 ②步。[diagram-design](references/diagram/diagram-design.md) 同时承载 Lancet 2024-07 调色板、思源黑体 Medium + 霞鹜文楷等**视觉规格**（权威规格）。**字体允许近似**：图像模型通常无法准确嵌入指定字体，设计稿字体近似外观即可，不作为设计稿合格条件；真实字体由第 ②步 TikZ 严格落地。
-- **② 渲染（diagram-render）**：对照设计稿按本 skill 视觉语言用 TikZ 重建成矢量图。**先确定方案**：对每一个 TikZ 不擅长实现的图片元素，三选一——复用已有 fontawesome5 矢量图标；或裁剪设计稿对应区域；或请模型重新生成局部 PNG。然后用 `tikz_template.tex` 的 Lancet 11 种 role box 实现外壳，用 `\includegraphics` 嵌入 PNG。编译后与设计稿**并排对比**，连线、布局、分组、关键文字标签基本一致方可进入评审。
+- **① 设计（diagram-design）**：描述场景、事实清单、基本视觉要求、参考图品质喂给图像大模型，让模型自主决定构图、分组节奏、色彩比例、形状；输出 PNG **设计稿**作为中间产物（含完整 prompt 记录）；对设计稿做初步事实与视觉检查，通过后再进入第 ②步。视觉风格为 **Lancet 调色板 + 轻盈 technical newsletter 风格 + Google Material Icons（可选）**；精确字重、线宽、字号、留白等视觉规格不在本步交给模型，由第 ②步 TikZ 严格落地。**字体允许近似**：图像模型通常无法准确嵌入指定字体，设计稿字体近似外观即可，不作为合格条件。
+- **② 渲染（diagram-render）**：对照设计稿按本 skill 视觉语言用 TikZ 重建成矢量图。**先确定方案**：对每一个 TikZ 不擅长实现的图片元素，三选一——复用已有 fontawesome5 矢量图标；或裁剪设计稿对应区域；或请模型重新生成局部 PNG。然后用 `tikz_template.tex` 的 Lancet 11 种 role box 实现外壳，用 `\includegraphics` 嵌入 PNG。本步同时承载完整的「视觉规格（TikZ 落地）」——Lancet 2024-07 色板、思源黑体 Medium + 霞鹜文楷字体表、精确线宽/箭头/编号圆点/留白等。编译后与设计稿**并排对比**，连线、布局、分组、关键文字标签基本一致方可进入评审。
 - **③ 评审（diagram-review）**：三通道检查——科学准确、读者理解、视觉质量 + 样式对齐。样式对齐把 TikZ 还原图与设计稿并排核对调色板、字重、节点形态、留白节奏、混合渲染衔接、信息完整性。
 
 ## 数据图路径
@@ -76,7 +76,7 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 - **对照**：[examples/comparison/](examples/comparison/)
 - **神经网络**：[examples/neural-network/](examples/neural-network/)
 
-本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**（ICLR/ICML/NeurIPS/CVPR/ACL/AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 筛选）找更新的真实论文首图作参考。只借布局与分组节奏，视觉元素仍按 [diagram-design §四](references/diagram/diagram-design.md#四视觉规格权威规格) 落地。
+本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**（ICLR/ICML/NeurIPS/CVPR/ACL/AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 筛选）找更新的真实论文首图作参考。只借布局与分组节奏，视觉元素仍按 [diagram-render §4.2](references/diagram/diagram-render.md#42-视觉规格tikz-落地) 落地。
 
 参考图在两个阶段都用：
 
@@ -129,8 +129,8 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
 
 - 有没有脱离节点、连线、分组的游离注解？（大标题、游离小标签、底部图例条、作者戳 → 都删掉，让图自解释。）
 - 每个节点是否有节点标题 + 一行描述？（图标按需加，不是硬要求。）
-- 配色是否按 Lancet 2024-07 调色板分配角色？若使用图标，是否与描边同色（不是黑色）？
-- 节点标题是否用思源黑体 Medium、描述是否用霞鹜文楷灰色？字重整体轻盈？（TikZ 侧硬要求；设计稿字体允许近似，不以此作为失败项。）
+- 配色是否按 Lancet 2024-07 调色板分配角色？若使用图标，是否全图统一且与描边同色（不是黑色）？
+- **TikZ 侧硬要求**：节点标题思源黑体 Medium、描述霞鹜文楷灰色、整体字重轻盈；精确线宽/字号/箭头/编号圆点/留白按 [diagram-render §4.2](references/diagram/diagram-render.md#42-视觉规格tikz-落地) 落地。设计稿字体允许近似，不作失败项。
 - 箭头是中性深灰细 Latex 大头，不是粗黑或五颜六色？
 - 流程多于 3 步时是否贴了小号彩色编号圆点，且不与边标签重叠？
 - **样式对齐**：TikZ 还原图与设计稿并排比较，气质是否一致？不是"用矢量退化成另一种风格"？
@@ -152,7 +152,7 @@ TikZ 主输出是 PDF/SVG，PNG 用于预览。混合渲染时核对嵌入 PNG �
 ## 什么值得约束，什么留给设计
 
 - **事实准确**是硬约束。标签、关系、方向、数量、公式、来源不能让模型自主。
-- **视觉语言**是硬约束。节点、箭头、字体、配色按 [diagram-design §四](references/diagram/diagram-design.md#四视觉规格权威规格) 统一，TikZ 还原时必须对齐设计稿气质。
+- **视觉语言**是硬约束。节点、箭头、字体、配色按 [diagram-render §4.2 视觉规格（TikZ 落地）](references/diagram/diagram-render.md#42-视觉规格tikz-落地) 统一，TikZ 还原时必须对齐设计稿气质。
 - **布局、形状、具体位置**：第 ①步交给图像模型；第 ②步按设计稿还原。参考图作为方向，不反推成逐节点坐标。
 - **按媒介判断可读性**。用实际标签与最终宽度判断；不靠把字号越缩越小解决拥挤。
 - **如实呈现**。不生成冒充实验、显微、医学或观测证据的图片；示意与真实数据明确区分。
