@@ -2,7 +2,7 @@
 
 讲框架图的验收：三条独立通道（科学准确、读者理解、视觉质量 + 样式对齐），分别检查，不能用平均分抵消问题。仅查源码或提示词不构成成图验收——必须对实际渲染出的图片打分。
 
-第 ①步设计稿见 [diagram-model](diagram-model.md)；第 ②步 TikZ 还原见 [diagram-tikz](diagram-tikz.md)；评审时**两张图都要在手**：
+第 ①步设计稿见 [diagram-design](diagram-design.md)；第 ②步 TikZ 还原见 [diagram-render](diagram-render.md)；评审时**两张图都要在手**：
 
 - `drafts/figure-draft.png`：图像模型出的设计稿（气质参照）。
 - `figure.pdf` + `figure.png`：TikZ 还原后的最终交付图。

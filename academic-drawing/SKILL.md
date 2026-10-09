@@ -1,14 +1,14 @@
 ---
 name: academic-drawing
-description: 为论文、教材和技术报告设计、生成、修订和评审静态科研图片。框架图走"图像模型出设计稿 → TikZ 还原（必要时裁剪或嵌入模型片段）→ 评审"的串联流水线；定量数据图用 Matplotlib；不用于正文写作、交互式仪表盘或伪造实验影像。
+description: 为论文、教材和技术报告设计、生成、修订和评审静态科研图片。框架图走"设计 → 渲染 → 评审"的串联流水线：图像模型根据场景/事实/视觉要求出设计稿，再用 TikZ 对照还原，必要时复用矢量图标、裁剪设计稿或请模型重新生成局部 PNG 嵌入；定量数据图用 Matplotlib；不用于正文写作、交互式仪表盘或伪造实验影像。
 ---
 
 # 科技绘图
 
-本 skill 按**数据图 vs 框架图**两类组织。框架图使用统一的视觉语言（见 [diagram-visual-style](references/diagram/diagram-visual-style.md)）。
+本 skill 按**数据图 vs 框架图**两类组织。
 
 - **数据图**（chart）：定量编码，Matplotlib 路径。详见 [references/chart/](references/chart/)。
-- **框架图**（diagram）：架构、流程、对照、神经网络等解释图，走"**图像模型设计 → TikZ 还原 → 评审**"流水线。
+- **框架图**（diagram）：架构、流程、对照、神经网络等解释图，走"**设计 → 渲染 → 评审**"三步串联流水线。
 
 ## 框架图流水线
 
@@ -16,27 +16,34 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 事实 + 视觉要求 + 参考图
         │
         ▼
-   ① 图像模型出设计稿           ← diagram-model
-   （prompt + PNG，构图自由）
+   ① 设计（design）              ← diagram-design
+   图像大模型自主设计构图、
+   分组节奏、色彩比例、形状；
+   产出 PNG 设计稿；初步检查
+   通过后进入下一步。
         │
         ▼
-   ② TikZ 还原                  ← diagram-tikz
-   （对照设计稿重建矢量；
-     无法实现的部分裁剪设计稿
-     或请模型补生成局部，
-     以图片形式嵌入 TikZ）
+   ② 渲染（render）              ← diagram-render
+   对照设计稿用 TikZ 还原矢量图。
+   不可实现的图片元素先确定方案：
+     a. 复用 fontawesome5 矢量图标
+     b. 裁剪设计稿作为 PNG 嵌入
+     c. 请模型重新生成局部 PNG 嵌入
+   编译后与设计稿并排对比，
+   连线/布局/分组/关键文字标签
+   基本一致方可进入评审。
         │
         ▼
-   ③ 评审                       ← diagram-review
-   （科学 / 读者 / 视觉三通道）
+   ③ 评审（review）              ← diagram-review
+   科学准确 / 读者理解 /
+   视觉质量 + 样式对齐 四通道。
 ```
 
 **路径说明**：
 
-- **① 图像模型只做设计**：拿事实清单、视觉风格、参考图喂模型，让模型自主决定构图、分组节奏、色彩比例。输出 PNG 作为**设计稿**，不是最终交付图。
-- **② TikZ 还原是主交付**：对照设计稿按本 skill 视觉语言（Lancet 2024-07 调色板、思源黑体 Medium + 霞鹜文楷、细 Latex 大头箭头）重建成矢量图。保证可编辑、可嵌入 LaTeX、字体正确嵌入。
-- **TikZ 搞不定的部分允许混合**：复杂插画、手绘风机制示意、不规则曲面、复杂图标用 TikZ 画会很笨拙 → 从设计稿**裁剪**该区域，或请模型**单独生成一张**该元素，以 `\includegraphics` 形式嵌入 TikZ 版面；外壳结构（节点、连线、文字、分组）仍用 TikZ 维护。
-- **样式对齐**：TikZ 还原必须符合设计稿的样式气质。调色板、字重、节点形态、箭头粗细、留白节奏都要和设计稿一致，不是另起一套"学术线稿"。
+- **① 设计（diagram-design）**：描述场景、事实清单、视觉要求、参考图品质喂给图像大模型，让模型自主决定构图、分组节奏、色彩比例、形状；输出 PNG **设计稿**作为中间产物（含完整 prompt 记录）；对设计稿做初步事实与视觉检查，通过后再进入第 ②步。[diagram-design](references/diagram/diagram-design.md) 同时承载 Lancet 2024-07 调色板、思源黑体 Medium + 霞鹜文楷等**视觉规格**（权威规格）。
+- **② 渲染（diagram-render）**：对照设计稿按本 skill 视觉语言用 TikZ 重建成矢量图。**先确定方案**：对每一个 TikZ 不擅长实现的图片元素，三选一——复用已有 fontawesome5 矢量图标；或裁剪设计稿对应区域；或请模型重新生成局部 PNG。然后用 `tikz_template.tex` 的 Lancet 11 种 role box 实现外壳，用 `\includegraphics` 嵌入 PNG。编译后与设计稿**并排对比**，连线、布局、分组、关键文字标签基本一致方可进入评审。
+- **③ 评审（diagram-review）**：三通道检查——科学准确、读者理解、视觉质量 + 样式对齐。样式对齐把 TikZ 还原图与设计稿并排核对调色板、字重、节点形态、留白节奏、混合渲染衔接、信息完整性。
 
 ## 数据图路径
 
@@ -57,7 +64,7 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 | 任务 | 路径 |
 |---|---|
 | 位置、长度、面积或颜色需要准确编码数值的曲线、统计图、热图 | Matplotlib（[chart-draw](references/chart/chart-draw.md)） |
-| 架构、流程、对照、神经网络等解释图 | 图像模型设计 + TikZ 还原（本流水线） |
+| 架构、流程、对照、神经网络等解释图 | 设计 → 渲染 → 评审（本流水线） |
 | 机制图与定量结果组合 | 分面板制作后合成（[multipanel-figures](references/multipanel-figures.md)） |
 
 ### 3. 挑参考图
@@ -69,40 +76,48 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 - **对照**：[examples/comparison/](examples/comparison/)
 - **神经网络**：[examples/neural-network/](examples/neural-network/)
 
-本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**（ICLR/ICML/NeurIPS/CVPR/ACL/AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 筛选）找更新的真实论文首图作参考。
+本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**（ICLR/ICML/NeurIPS/CVPR/ACL/AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 筛选）找更新的真实论文首图作参考。只借布局与分组节奏，视觉元素仍按 [diagram-design §四](references/diagram/diagram-design.md#四视觉规格权威规格) 落地。
 
 参考图在两个阶段都用：
 
 - **第 ①步给图像模型**：作为布局方向和品质示范，让模型基于参考自主构图。
-- **第 ②步给 TikZ 还原**：作为版式决策依据（本设计稿属于架构 / 流程 / 对照 / 神经网络哪一类，哪种布局方案更对应）。
+- **第 ②步给 TikZ 还原**：作为版式决策依据（设计稿属于架构 / 流程 / 对照 / 神经网络哪一类，哪种布局方案更对应）。
 
-### 4. 图像模型出设计稿
+### 4. 设计（diagram-design）
 
-按 [diagram-model](references/diagram/diagram-model.md) 的四段式写 prompt（场景 + 事实 + 视觉风格 + 参考作用），通过工具真实接口把参考图传给模型，保存 `prompts/draft.txt` + `drafts/figure-draft.png`。
+按 [diagram-design](references/diagram/diagram-design.md) 的四段式写 prompt（场景 + 事实 + 视觉风格 + 参考作用），通过工具真实接口把参考图传给模型，保存 `prompts/draft.txt` + `drafts/figure-draft.png`。设计稿**是中间产物**，不是最终交付。
 
-**产物**：一张 PNG 设计稿 + 完整 prompt 记录。设计稿是**中间产物**，不是最终交付。如模型工具不可用，可直接基于参考图手绘线框作为设计稿，或者跳到步骤 5 由作者自行规划布局。
+出设计稿后做一轮初步检查：
 
-### 5. TikZ 还原
+- **事实检查**：必需对象、准确标签、关系、方向、不变量是否齐全。
+- **视觉检查**：配色、字重、节点形态是否符合 Lancet 2024-07 + 思源黑体 Medium + 霞鹜文楷骨架；有无游离的大标题、侧边小标签、底部图例条。
 
-按 [diagram-tikz](references/diagram/diagram-tikz.md) 对照设计稿重建成矢量图：
+初步检查不通过就回到 prompt 修订，不要带着错误事实进入第 ②步。
 
-1. **读设计稿**：识别节点、连线、分组、关键文字标签、彩色强调区域；用笔或注释在稿上标 TikZ 坐标草图。
-2. **按本 skill 视觉语言重建**：复制 `tikz_template.tex`，用 Lancet 2024-07 的 11 种 role box 填节点、`flow` 画箭头、`badge` 做编号圆点；节点标题思源黑体 Medium，描述霞鹜文楷灰色；图标按需添加。
-3. **混合渲染（可选）**：TikZ 画不出来的局部（复杂机制图标、手绘风插图、不规则示意），从设计稿裁剪 PNG 或请模型单独补生成一张，用 `\includegraphics` 嵌入；外壳的框、线、文字、分组仍是 TikZ。
-4. **编译**：
+### 5. 渲染（diagram-render）
+
+按 [diagram-render](references/diagram/diagram-render.md)：
+
+1. **读设计稿、先确定方案**：列节点 / 连线 / 分组 / 强调元素清单；对 TikZ 不擅长实现的元素，三选一处理：
+   - **方案 A（优先）**：复用 fontawesome5 或本地 `assets/icons/` 的矢量图标；
+   - **方案 B**：裁剪设计稿对应区域作为 PNG 嵌入；
+   - **方案 C**：请大模型重新生成局部 PNG（指定风格与设计稿一致、透明背景）嵌入。
+   每个决策记录到 `assets/README.md` 或代码注释。
+2. **按 tikz_template.tex 实现**：Lancet 11 种 role box、`\icn` 五参数（图标可选）、badge 圆点、edge label；思源黑体 Medium + 霞鹜文楷。混合渲染时用 `\includegraphics` 嵌入 `assets/` 下的 PNG，外壳的节点、连线、文字、分组仍由 TikZ 维护。
+3. **编译并对比**：
 
 ```bash
 python "$skill_dir/scripts/tikz_compile.py" figure.tex \
   --output-dir figures --formats pdf,svg,png
 ```
 
-**样式对齐硬约束**：还原后的 TikZ 图必须和设计稿**同气质**——调色板、字重、节点形态、留白节奏一致。TikZ 还原不是把设计稿"退化为学术线稿"，而是把设计稿**矢量化**。
+与 `drafts/figure-draft.png` 并排对比，确认连线、布局、分组、关键文字标签都能还原、样式气质一致。不一致则调整 TikZ，或回到第 ④步让模型修订设计稿。
 
-工具不可用时（TeX 引擎缺失、xeCJK 字体缺失、超时），说明未生成矢量版本，不悄悄回退到栅格或启用需额外密钥的服务。
+工具不可用时（TeX 引擎、xeCJK、fontawesome5 缺失、超时），说明未生成矢量版本，不悄悄回退或启用需额外密钥的服务。
 
-### 6. 评审
+### 6. 评审（diagram-review）
 
-**三条独立通道分别检查**——科学准确、读者理解、视觉质量 + 文件核验。任一条有问题就返工到对应阶段；返工后重新评审。详见 [diagram-review](references/diagram/diagram-review.md)；数据图走 [chart-review](references/chart/chart-review.md)。
+**三条独立通道分别检查**——科学准确、读者理解、视觉质量 + 样式对齐 + 文件核验。任一条有问题就返工到对应阶段；返工后重新评审。详见 [diagram-review](references/diagram/diagram-review.md)；数据图走 [chart-review](references/chart/chart-review.md)。
 
 #### 简要自查
 
@@ -137,7 +152,7 @@ TikZ 主输出是 PDF/SVG，PNG 用于预览。混合渲染时核对嵌入 PNG �
 ## 什么值得约束，什么留给设计
 
 - **事实准确**是硬约束。标签、关系、方向、数量、公式、来源不能让模型自主。
-- **视觉语言**是硬约束。节点、箭头、字体、配色按 [diagram-visual-style](references/diagram/diagram-visual-style.md) 统一，TikZ 还原时必须对齐设计稿气质。
+- **视觉语言**是硬约束。节点、箭头、字体、配色按 [diagram-design §四](references/diagram/diagram-design.md#四视觉规格权威规格) 统一，TikZ 还原时必须对齐设计稿气质。
 - **布局、形状、具体位置**：第 ①步交给图像模型；第 ②步按设计稿还原。参考图作为方向，不反推成逐节点坐标。
 - **按媒介判断可读性**。用实际标签与最终宽度判断；不靠把字号越缩越小解决拥挤。
 - **如实呈现**。不生成冒充实验、显微、医学或观测证据的图片；示意与真实数据明确区分。
@@ -150,10 +165,9 @@ TikZ 主输出是 PDF/SVG，PNG 用于预览。混合渲染时核对嵌入 PNG �
 |---|---|
 | 挑参考图、学版式 | [examples/index.md](examples/index.md) |
 | **框架图** | |
-| &nbsp;&nbsp;视觉元素（节点、箭头、字体、配色、图标、布局） | [diagram/diagram-visual-style.md](references/diagram/diagram-visual-style.md) |
-| &nbsp;&nbsp;①步出设计稿（写 prompt + 参考图） | [diagram/diagram-model.md](references/diagram/diagram-model.md) |
-| &nbsp;&nbsp;②步 TikZ 还原（选版式 + 规划布线 + 混合渲染 + 编译） | [diagram/diagram-tikz.md](references/diagram/diagram-tikz.md) |
-| &nbsp;&nbsp;③步评审（科学、理解、视觉、文件、样式对齐） | [diagram/diagram-review.md](references/diagram/diagram-review.md) |
+| &nbsp;&nbsp;①步 设计（prompt、参考图、视觉规格、初步检查） | [diagram/diagram-design.md](references/diagram/diagram-design.md) |
+| &nbsp;&nbsp;②步 渲染（方案三选一、TikZ 实现、混合渲染、对比） | [diagram/diagram-render.md](references/diagram/diagram-render.md) |
+| &nbsp;&nbsp;③步 评审（科学、理解、视觉、样式对齐、文件） | [diagram/diagram-review.md](references/diagram/diagram-review.md) |
 | **数据图** | |
 | &nbsp;&nbsp;Matplotlib 绘制、图型、配色 | [chart/chart-draw.md](references/chart/chart-draw.md) |
 | &nbsp;&nbsp;数据图评审 | [chart/chart-review.md](references/chart/chart-review.md) |

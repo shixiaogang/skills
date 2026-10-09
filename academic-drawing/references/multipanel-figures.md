@@ -33,7 +33,7 @@
 
 ## 组合策略
 
-- 各面板按最终尺寸独立生成，按工具保留绘图源文件或图像模型的提示与修改记录。框架面板按 [diagram-tikz](diagram/diagram-tikz.md) 或 [diagram-model](diagram/diagram-model.md) 生成并核验，数据面板按 [chart-draw](chart/chart-draw.md) 使用真实数据绘制。
+- 各面板按最终尺寸独立生成，按工具保留绘图源文件或图像模型的提示与修改记录。框架面板按 [diagram-design](diagram/diagram-design.md) 出设计稿、[diagram-render](diagram/diagram-render.md) 还原矢量图并核验，数据面板按 [chart-draw](chart/chart-draw.md) 使用真实数据绘制。
 - 已有代码面板或按需矢量面板保持真实 PDF/SVG。
 - Matplotlib 面板保持矢量文字和线条；仅对超大点集栅格化具体 artist。
 - 真实图像和模型生成图保留原始栅格及有效像素，不重复压缩；不能把栅格面板转封装后称为矢量面板。

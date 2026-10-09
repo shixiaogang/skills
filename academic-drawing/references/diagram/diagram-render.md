@@ -1,25 +1,27 @@
-# TikZ 路径（diagram-tikz）—— 流水线第 ②步：对照设计稿还原
+# 框架图渲染（diagram-render）—— 流水线第 ②步：TikZ 还原
 
-**本步是流水线的主交付环节**，把第 ①步 [diagram-model](diagram-model.md) 出的 PNG 设计稿还原成**可编辑的矢量图**。本步不是另起炉灶，而是**对照设计稿**在 TikZ 里重建版式、节点、连线、文字，使其既符合本 skill 视觉语言又保持与设计稿一致的气质。
+**本步是流水线的主交付环节**，把 [diagram-design](diagram-design.md) 产出的 PNG 设计稿还原成**可编辑的矢量图**。本步不是另起炉灶，而是**对照设计稿**在 TikZ 里重建版式、节点、连线、文字，使其既符合 [diagram-design §四](diagram-design.md#四视觉规格权威规格) 的视觉语言，又保持与设计稿一致的气质。
 
-TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面、独特图标）允许**裁剪设计稿**对应区域，或请模型**单独补生成**一张该元素的 PNG，用 `\includegraphics` 嵌入 TikZ 版面；外壳的节点、连线、文字、分组仍由 TikZ 维护。见 [§五 混合渲染](#五混合渲染搞不定的部分借模型片段)。
+TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面、独特图标）按 [§二 方案三选一](#二方案三选一处理不可实现元素) 决定——复用矢量图标 / 裁剪设计稿 / 请模型重新生成局部 PNG，用 `\includegraphics` 嵌入 TikZ 版面；外壳的节点、连线、文字、分组仍由 TikZ 维护。
 
-视觉元素的具体样式走 [diagram-visual-style](diagram-visual-style.md)；完整评审走 [diagram-review](diagram-review.md)。整体流水线见 [SKILL.md](../../SKILL.md)。
+完整评审走 [diagram-review](diagram-review.md)。整体流水线见 [SKILL.md](../../SKILL.md)。
 
 **本步产物**：
 
 - `figure.tex`：可编译的矢量源，必要时含 `\includegraphics` 嵌入的 PNG 片段。
 - `figure.pdf` / `figure.svg`：矢量主输出。
-- `figure.png`：预览栅格。
-- `assets/` （可选）：裁剪自设计稿或模型补生成的局部 PNG。
+- `figure.png`：预览栅格，供与设计稿对比。
+- `assets/`（可选）：复用矢量图标 / 裁剪自设计稿 / 模型补生成的局部 PNG。
 
 **样式对齐硬约束**：还原图必须与设计稿同气质——Lancet 2024-07 调色板、节点形态、字重、箭头粗细、留白节奏一致。TikZ 还原**不是**把设计稿退化为学术线稿，而是**矢量化**。
 
 ---
 
-## 一、读设计稿
+## 一、读设计稿、先确定方案
 
-拿到第 ①步的 `drafts/figure-draft.png` 后，先逐一列出：
+拿到 [diagram-design](diagram-design.md) 的 `drafts/figure-draft.png` 后，第一步**不是**直接写代码，而是**列清单、定方案**。
+
+### 1.1 清单：图里有什么
 
 - **节点清单**：画面里有哪些节点（框、卡片、圆、立方体）、各自的标题和描述文字、带不带图标、属于哪个角色色。
 - **连线清单**：哪些节点之间有连线，起止方位、是否带箭头、线型（实/虚）、是否带边标签、是否属于反馈/回路。
@@ -29,9 +31,7 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 
 把每一项标在设计稿的副本上（或写成一份文字清单），作为 TikZ 坐标草图。
 
----
-
-## 二、绘前核对（事实清单）
+### 1.2 事实清单（绘前核对）
 
 - 读者要理解什么：机制、变化、对比还是结构。
 - 必需对象、准确标签、关系、方向、条件和数量。
@@ -40,11 +40,69 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 
 缺少关键拓扑或数值时不得依据领域习惯自行补全。计数和计算先用代码或记录核验再进入绘图。
 
+### 1.3 识别"TikZ 画不动的元素"
+
+对清单中的每一个元素，先判断 TikZ 能否直接画出来：
+
+- **TikZ 擅长**：矩形/圆角/圆/多边形节点、直线/折线/弧线连接、文字标签、箭头、分组框、badge 圆点、顶色条、规则几何示意。→ 这些**全部**用 TikZ 代码写。
+- **TikZ 不擅长**：复杂机制插画（Transformer attention 云、CNN feature map 立体渲染）、三维物件（带阴影的服务器、立体 CPU）、手绘风或水彩风卡通、艺术化图标、不规则曲面、生物/物理设备的拟真图像。→ 这些走 [§二 方案三选一](#二方案三选一处理不可实现元素)。
+
+把"TikZ 不擅长"的元素单独列一张清单，为每一项选定处理方式后再进入 §三 实现。
+
 ---
 
-## 三、按设计稿版式选 TikZ 版式
+## 二、方案三选一：处理不可实现元素
 
-设计稿已经给出大致版式。按设计稿观察到的结构，对照下表选具体 TikZ 布局方案。四类版式按读者问题选，每类对应一组布局方案。每一节都给出本地 [examples/](../../examples/) 的参考图目录；本地库之外，也可以在 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 按 conceptual / framework / pipeline / architecture / taxonomy / teaser 标签筛选近年顶会的 Figure 1 作为灵感——只借布局和分组节奏，视觉元素仍按 [diagram-visual-style](diagram-visual-style.md) 落地。
+对 §1.3 列出的"TikZ 不擅长"元素，按优先级三选一。能用矢量方案就不走栅格嵌入，能复用就不新生成。
+
+### 2.1 方案 A：复用已有矢量图标（**优先**）
+
+能用 fontawesome5 或本地 `assets/icons/` 的矢量图标**近似替代**时，优先用矢量图标：
+
+- 通用图标（齿轮 `\faCogs`、数据库 `\faDatabase`、云 `\faCloud`、箭头 `\faArrowRight`、用户 `\faUser`、脑 `\faBrain`、文件 `\faFile` 等）→ 直接 `\usepackage{fontawesome5}` 调用。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。
+- 新版 fontawesome5 的 `\faFileAlt` → `\faFile`、`\faMobileAlt` → `\faMobile`、`\faShieldAlt` 已废弃，首次使用前先 `grep fontawesome5-mapping.def`。
+- 图标颜色传与节点描边同色（如 `lcBlue!90!black`），**不要用 black**。
+
+**适用判断**：设计稿里的图标语义能被矢量图标表达——即使样式略不同（例如设计稿是手绘感的 CPU，fontawesome5 的 `\faMicrochip` 是扁平线稿），只要**语义准确、风格统一**就优先用矢量。读者认的是语义，不是笔触细节。
+
+### 2.2 方案 B：裁剪设计稿作为 PNG 嵌入
+
+当方案 A 无法替代（没有合适的矢量图标，或语义特殊到必须用具象图），从设计稿裁剪对应区域：
+
+- 用 Preview、GIMP 或 `pdftoppm` + 裁剪脚本从 `drafts/figure-draft.png` 切出目标区域。
+- 去背（透明化白色或当前底色）后保存到 `assets/`。
+- 继承设计稿的来源与 prompt 记录；文件 License 可追溯。
+
+**适用判断**：设计稿里的插画质量已经够好，只是需要把它"抠"出来嵌到 TikZ 布局里。
+
+### 2.3 方案 C：请大模型重新生成局部 PNG
+
+当方案 A 不可用、方案 B 裁剪质量不足（原图分辨率不够、原图含不想要的背景、原图尺寸比例不对），请模型单独生成局部图：
+
+- Prompt 要求：**仅画 XX 元素、透明背景、风格与设计稿一致**（同一画家笔触、同一调色板、同一线宽、同一笔触密度）。
+- 单图分辨率按 §四 的编译目标尺寸计算有效 DPI ≥ 300，必要时请求更高原生输出。
+- 保存到 `assets/`，单独记录 prompt。
+
+**适用判断**：需要高分辨率、干净背景、特定比例的局部插画，且方案 A/B 都达不到要求。
+
+### 2.4 决策记录
+
+每一个"TikZ 不擅长"的元素，在 `assets/README.md` 或代码注释里记录：
+
+```text
+元素：Transformer attention 云图（右上角）
+决策：方案 C（模型补生成）
+原因：fontawesome5 无对应矢量；设计稿裁剪分辨率不够。
+来源：assets/attention-cloud.png，prompt 见 assets/attention-cloud.prompt.txt
+```
+
+决策不透明会在评审时触发返工，建议第一次就记下来。
+
+---
+
+## 三、按版式用 TikZ 实现
+
+设计稿已经给出大致版式。按设计稿观察到的结构，对照下表选具体 TikZ 布局方案。四类版式按读者问题选，每类对应一组布局方案。每一节都给出本地 [examples/](../../examples/) 的参考图目录；本地库之外，也可以在 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 按 conceptual / framework / pipeline / architecture / taxonomy / teaser 标签筛选近年顶会的 Figure 1 作为灵感——只借布局和分组节奏，视觉元素仍按 [diagram-design §四](diagram-design.md#四视觉规格权威规格) 落地。
 
 ### 3.1 架构图
 
@@ -126,7 +184,7 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 
 ## 四、启动与 TikZ 模板
 
-复制 [TikZ 模板](../../templates/tikz_template.tex) 到任务目录。模板默认走 **Lancet 2024-07 调色板**、**思源黑体 Medium + 霞鹜文楷**，整体字重和线重轻盈。
+复制 [TikZ 模板](../../templates/tikz_template.tex) 到任务目录。模板默认走 **Lancet 2024-07 调色板**、**思源黑体 Medium + 霞鹜文楷**，整体字重和线重轻盈，与设计稿样式对齐。
 
 ```bash
 python "$skill_dir/scripts/tikz_compile.py" figure.tex \
@@ -140,7 +198,6 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
   - 标题 + 描述（默认）：直接在节点里写 `{\sanssemiboldcjk Title}\\[.08em]{\wenkaicjk\color{muted} Description}`，图标按需添加。
   - 带图标：`\icn{<图标 pt>}{\faXxx}{<标题>}{<描述>}{<图标颜色>}`，图标颜色传与节点描边同色（如 `lcBlue!90!black`），**不要用 black**。图标是**可选**的，不是硬要求。
 - **分组与标题**：`figtitle` + `figcaption` 作为**可选**的节点级标题——图能自解释时直接不加。分组用虚线框 + 分组名（贴在边界上），不要用游离的侧边小标签。
-- **图标（可选）**：`\usepackage{fontawesome5}`。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。新版 fontawesome5 的 `\faFileAlt` → `\faFile`、`\faMobileAlt` → `\faMobile`、`\faShieldAlt` 已废弃，首次使用前先 grep `fontawesome5-mapping.def`。
 - **箭头**：`flow`（中性深灰 Latex 大头 0.9pt，正交折线自动圆角）、`secondary`（更细次要连接）、`dashflow`（虚线可选）、`feedback flow`（Lancet 玫红虚线反馈）。
 - **编号圆点**：`badge blue` / `badge cyan` / `badge teal` / `badge grass` / `badge coral` / `badge rose`，4.8 mm 小号实心圆。
 - **边标签**：`edge label` 用霞鹜文楷灰色，fill=white 便于穿越底色。
@@ -166,6 +223,41 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
   \node[badge blue] at (36,14) {1};
 \end{tikzpicture}
 ```
+
+### 4.1 混合渲染：嵌入 §二 产出的 PNG
+
+当 §二 决定了方案 B/C 需要嵌入 PNG 时，用 `\includegraphics` 把 `assets/` 下的 PNG 嵌入 TikZ 版面。外壳的节点、连线、文字、分组仍由 TikZ 维护。
+
+**嵌入写法**（PNG 作为节点内容，外壳是 role box）：
+
+```latex
+\usepackage{graphicx}
+% ...
+\node[inner sep=0pt] (brain) at (54,36) {%
+  \includegraphics[width=18mm]{assets/brain-illustration.png}%
+};
+% 外壳的 role box 包住嵌入图
+\node[r compute,fit=(brain),inner sep=1.5mm,
+      label={[r compute,above]above:{\sanssemiboldcjk 大脑模型}}] {};
+```
+
+**嵌入写法**（PNG 作为底图，TikZ 在上层画箭头/文字）：
+
+```latex
+\node[inner sep=0pt] at (0,0)
+  {\includegraphics[width=120mm]{assets/attention-cloud.png}};
+\node[edge label,fill=white] at (30,10) {Q};
+\draw[flow] (10,-20)--(30,-10);
+```
+
+**嵌入片段的检查项**：
+
+- 嵌入 PNG 的实际像素密度在最终尺寸下 ≥ 300 DPI。
+- 透明背景与白底 TikZ 面板无接缝；若有可见边框，用 `clip` 或后处理裁掉。
+- 嵌入片段的调色板和笔触与整图一致——不能左半张工业线稿、右半张卡通水彩。
+- 文件 License 可追溯：裁剪自设计稿的 PNG 继承设计稿的来源与 prompt 记录；模型补生成的 PNG 单独记录 prompt。
+
+**混合渲染不满足"真矢量"要求**：如果用户明确要求无位图的纯矢量 PDF/SVG，不能走混合渲染；要么退回 §2.1 用矢量图标代替，要么降低信息密度/换表示方式。
 
 ---
 
@@ -195,58 +287,7 @@ TikZ 箭头的朝向由**最后一段路径的方向**决定，而不是终点�
 
 ---
 
-## 六、混合渲染：搞不定的部分借模型片段
-
-TikZ 适合画**规则结构**——节点、连线、文字、分组、规则几何。遇到**不规则插画**（复杂机制示意、手绘风卡通、三维物件、特殊曲面、艺术化图标）时，强行写 TikZ 代码会既耗时又失真。此时允许**混合渲染**：外壳用 TikZ 维护，不规则局部用从设计稿裁剪或模型补生成的 PNG 嵌入。
-
-**何时触发混合渲染**：
-
-- 设计稿里有复杂插画（如 Transformer 的 attention 云图、CNN 的 feature map 立体渲染、带阴影的 3D 服务器图标）。
-- TikZ 代码量预估 > 50 行只为画一个装饰图标，收益不成比例。
-- 设计稿的手绘感、水彩感、立体感是**信息的一部分**（如教学图里"大脑"或"物理设备"图像），抽象成矢量会丢语义。
-
-**何时不要混合渲染**：
-
-- 常规节点、文字、箭头、分组框——这些 TikZ 本就擅长，别偷懒。
-- 设计稿里一些可以直接用 fontawesome5 替代的通用图标（齿轮、数据库、云、箭头）——用矢量图标代替，不嵌 PNG。
-
-**混合渲染两种做法**：
-
-1. **裁剪设计稿**：从 `drafts/figure-draft.png` 用 Preview、GIMP 或 `pdftoppm`+裁剪脚本切出目标区域，去背后保存到 `assets/`。
-2. **模型补生成**：请模型单独生成"仅画 XX 元素，透明背景，XX 风格"的局部图，保存到 `assets/`。prompt 要指明风格与设计稿一致（如同一画家笔触、同一调色板、同一线宽）。
-
-**TikZ 嵌入写法**：
-
-```latex
-\usepackage{graphicx}
-% ...
-\node[inner sep=0pt] (brain) at (54,36) {%
-  \includegraphics[width=18mm]{assets/brain-illustration.png}%
-};
-% 外壳的 role box 包住嵌入图
-\node[r compute,fit=(brain),inner sep=1.5mm,label={[r compute,above]above:{\sanssemiboldcjk 大脑模型}}] {};
-```
-
-或者把 PNG 作为节点底图，TikZ 在上层画箭头/文字：
-
-```latex
-\node[inner sep=0pt] at (0,0) {\includegraphics[width=120mm]{assets/attention-cloud.png}};
-\node[edge label,fill=white] at (30,10) {Q};
-\draw[flow] (10,-20)--(30,-10);
-```
-
-**嵌入片段的检查项**：
-
-- 嵌入 PNG 的实际像素密度在最终尺寸下 ≥ 300 DPI。
-- 透明背景与白底 TikZ 面板无接缝；若有可见边框，用 `clip` 或后处理裁掉。
-- 嵌入片段的调色板和笔触与整图一致——不能左半张工业线稿、右半张卡通水彩。
-- 文件 License 可追溯：裁剪自设计稿的 PNG 继承设计稿的来源与 prompt 记录；模型补生成的 PNG 单独记录 prompt。
-
-**混合渲染不满足"真矢量"要求**：如果用户明确要求无位图的纯矢量 PDF/SVG，不能走混合渲染；要么把该元素全部用 TikZ 重画，要么降低信息密度/换表示方式。
-
----
-
-## 七、foreach 变量命名避坑
+## 六、foreach 变量命名避坑
 
 `\foreach` 的变量名不要和 LaTeX 原生命令撞车：
 
@@ -255,7 +296,7 @@ TikZ 适合画**规则结构**——节点、连线、文字、分组、规则�
 
 ---
 
-## 八、真实矢量与可编辑性
+## 七、真实矢量与可编辑性
 
 用户要求无位图的 SVG/PDF 或全部图元可编辑时，将已核验设计完整重建为 SVG、TikZ 或项目支持的矢量对象。嵌入 PNG、只覆盖标签、修改扩展名，都不满足全图矢量要求。
 
@@ -263,19 +304,46 @@ TikZ 适合画**规则结构**——节点、连线、文字、分组、规则�
 
 ---
 
-## 九、输出与检查
+## 八、编译并与设计稿对比
+
+编译：
+
+```bash
+python "$skill_dir/scripts/tikz_compile.py" figure.tex \
+  --output-dir figures --formats pdf,svg,png
+```
+
+字体嵌入或文字提取正常不能替代查看渲染结果。SVG 核对 `viewBox`、文字处理和位图组成。有排版文件时再看嵌入页。
+
+**与设计稿对比**：把 `drafts/figure-draft.png` 和 `figures/figure.png` 并排放，核对以下项**基本一致**（允许矢量化带来的笔触差异，不允许信息丢失或样式漂移）：
+
+- **节点清单对齐**：设计稿里的每一个节点都在 TikZ 版本里出现（允许嵌入 PNG 替代装饰性插画，不允许静默丢失事实节点）。
+- **连线清单对齐**：每条连线的起止、方向、线型、边标签都保留；箭头方向一致。
+- **分组清单对齐**：分组边界、分组名位置都对应。
+- **布局节奏对齐**：主次节点大小比例、组内 vs 组间间距比例、整图阅读方向与设计稿一致。
+- **样式气质对齐**：调色板、字重、节点形态、箭头粗细、留白节奏一致，不是退化为灰阶学术线稿。
+- **强调元素对齐**：badge 位置和颜色、彩色强调区域、特别图标位置都保留。
+
+**不一致时的处理**：
+
+- **信息丢失**（节点、连线、分组、关键文字标签缺失）→ 补回 TikZ。
+- **布局漂移**（节点位置顺序和设计稿差太多）→ 调 TikZ 坐标。
+- **样式漂移**（配色、字重、线宽偏离设计稿）→ 回查是否误用了旧样式、是否字体加载正确。
+- **设计稿本身有问题**（事实错误、关系错位）→ 回步骤 ①，让 [diagram-design](diagram-design.md) 重新修订设计稿，再回到本步。
+
+对比通过后进入 [diagram-review](diagram-review.md) 做最终评审。
+
+### 文件核验
 
 ```bash
 python "$skill_dir/scripts/validate.py" \
   figures/figure.pdf figures/figure.svg figures/figure.png
 ```
 
-字体嵌入或文字提取正常不能替代查看渲染结果。SVG 核对 `viewBox`、文字处理和位图组成。有排版文件时再看嵌入页。
-
-**交付物**：`.tex` 源码、`.pdf` 主输出、按需的 `.svg` / `.png` 预览；完整评审走 [diagram-review](diagram-review.md)。
+**交付物**：`figure.tex` 源码、`figure.pdf` 主输出、按需的 `figure.svg` / `figure.png` 预览、`assets/` 嵌入资源与决策记录；完整评审走 [diagram-review](diagram-review.md)。
 
 ---
 
-## 十、工具不可用时
+## 九、工具不可用时
 
 TeX 引擎、所需宏包或 fontawesome5 不可用时，说明未生成图片，不悄悄改用其他路径或启用需额外密钥的服务。
