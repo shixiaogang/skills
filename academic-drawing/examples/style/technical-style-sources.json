@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-09",
+  "references": [
+    {
+      "file": "technical-style-cnn.png",
+      "source": "User-provided visual reference, 2026-10-09",
+      "original_attachment": "codex-clipboard-7a6a113a-3103-4eba-8556-50442d708172.png",
+      "sha256": "eabc1cfa8ea99565001be623879fcb1f1503884eacd5b464c500dbf0339a2fcf",
+      "role": "Visual style only; scientific content is not an authority",
+      "license": "External provenance and redistribution permission not supplied; retain as user-provided reference, do not assert an open license"
+    },
+    {
+      "file": "technical-style-architecture.png",
+      "source": "User-provided visual reference, 2026-10-09",
+      "original_attachment": "codex-clipboard-8547465a-c793-4d83-8bf1-40522835805e.png",
+      "sha256": "ec43decc4b403961333e8c9117a75edeb3f26a0a12259d710f7d0deddbd282df",
+      "role": "Visual style only; scientific content is not an authority",
+      "license": "External provenance and redistribution permission not supplied; retain as user-provided reference, do not assert an open license"
+    },
+    {
+      "file": "technical-style-groups.png",
+      "source": "User-provided visual reference, 2026-10-09",
+      "original_attachment": "codex-clipboard-7d42b8e5-a750-499d-8e78-54bbdebba33b.png",
+      "sha256": "ddda0d0ea902fb67bc285b734e0802a8740a85c8b5cc43e8242e0f668744bbbf",
+      "role": "Visual style only; scientific content is not an authority",
+      "license": "External provenance and redistribution permission not supplied; retain as user-provided reference, do not assert an open license"
+    }
+  ]
+}

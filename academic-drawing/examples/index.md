@@ -1,22 +1,22 @@
 # 参考图库
 
-按版式类型分类的参考图。生成新图时，先在此找 1-2 张结构或气质相近的图作参考，不要求复刻。
+按版式类型分类的参考图。生成新图时，先按当前内容在此检索并选择 2–3 张主题、机制或对象相关且表达互补的图作参考，不要求复刻。
 
 - [architecture/](architecture/) — 系统架构、层级、依赖、分区
 - [flow/](flow/) — 顺序流程、数据流、协议交互
 - [comparison/](comparison/) — 二元权衡、对照卡片、决策映射
 - [neural-network/](neural-network/) — 深度学习架构（CNN、Transformer、Attention）
 
-框图的默认风格品质参照见 [newsletter-style](style/newsletter-style.md)：图标底板、标题/灰色说明、内部同色浅深。优先选跨主题参考，布局仍自主设计。
+框图的默认风格品质参照见 [清晰技术示意风格](style/clean-technical-style.md)：浅色分组、简洁图标、机制图元、短标签与内部同色浅深。每次另按内容相关性选 2–3 张参考，布局仍自主设计，不能固定复用这些风格样例。
 
-原有图库的来源与借鉴清单见 [sources.json](sources.json)，本次生成的风格样例记录见 [newsletter-style.json](style/newsletter-style.json)。
+原有图库的来源与借鉴清单见 [sources.json](sources.json)，当前参考来源见 [technical-style-sources.json](style/technical-style-sources.json)，历史生成样例记录见 [newsletter-style.json](style/newsletter-style.json)。
 
 ## 外部参考图库
 
 本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 找近年顶会的 Figure 1 / teaser 作为参考——该库收录 ICLR / ICML / NeurIPS / CVPR / ACL / AAAI 2023-2026 的首图，按 **conceptual / framework / pipeline / architecture / taxonomy / teaser** 六类打标签，可直接按版式筛选。
 
 - 在线浏览与筛选：https://qwdwqfwq.github.io/topconf-paper-figure-gallery/
-- 使用方式：挑 1-2 张结构或气质相近的图，**只借布局、分组节奏、文字层次**（见 [diagram-design §三](../references/diagram/diagram-design.md#三参考图使用方式)、[diagram-render §三](../references/diagram/diagram-render.md#三按版式用-tikz-实现)）；视觉元素（色板、字体、线型）仍按 [diagram-render §4.2](../references/diagram/diagram-render.md#42-视觉规格tikz-落地) 的 Lancet 2024-07 + 思源黑体 Normal + 霞鹜文楷落地，不复刻原图配色和装饰。
+- 使用方式：按内容相关性挑选 2–3 张合适的图，**只借分组节奏、图元表达、文字层次，布局自主**（见 [diagram-design §三](../references/diagram/diagram-design.md#参考)、[SVG渲染与导出](../references/diagram/diagram-render.md#三渲染与导出)）；视觉元素（色板、字体、线型）仍按 [diagram-render §4.2](../references/diagram/diagram-render.md#42-视觉规格) 的 Lancet 2024-07 + 中文思源黑体 Normal/文楷 Regular + 英文 Inter + STIX2落地，不复刻原图配色和装饰。
 - 使用边界：仅做设计方向参考；图里的科学内容、精确标签、机制细节不作为当前任务的事实来源。注意该库图片属于原作者和出版商，72 小时下架政策下别把参考图当作可商用素材。
 
 本地 examples/ 作为"已核验、带借鉴注记"的小而精选集，外部库作为"覆盖面广、随新论文滚动更新"的广谱底库——两者互补。
@@ -69,11 +69,11 @@
 | [transformer-encoder-decoder](neural-network/transformer-encoder-decoder.png) | Transformer 整体架构（Encoder + Decoder） | 左右两列用容器 + 外部 `N×` 标记表示重复 N 次；块按运算类型分色且色相稳定；残差连接用从模块入口外绕回到 Add&Norm 的正交线；Encoder→Decoder 的 cross-attention 用显式长桥线；⊕ 符号表示 token embedding 和 positional encoding 相加 |
 | [attention-mechanisms](neural-network/attention-mechanisms.png) | 原理图 + 组件堆叠双图对照 | 两图并列同页共享色板与块样式；Q/K/V 作为底部对称输入；多头并行用错位堆叠的叠块阴影；右侧 `h` brace 标 head 数量 |
 
-## 怎么把参考喂给图像模型
+## 怎么把参考交给支持 SVG 的大模型
 
 1. 判断当前图要讲什么任务：架构、流程、对照、决策、神经网络。
-2. 从对应子目录打开 1-2 张结构或气质相近的原图。
-3. 把原图通过工具实际支持的参考图片接口提供给模型，并说明每张图的作用。不能只在提示词里写本地路径就宣称模型看过图片。
+2. 按主题、机制或对象检索，从合适子目录打开 2–3 张内容相关且表达互补的原图；本地不足时继续查找可追溯外部来源。
+3. 把原图通过工具实际支持的参考图片接口提供给模型，并说明每张图的来源、内容相关性和具体借鉴点。不能只在提示词里写本地路径就宣称模型看过图片。
 4. 用几句话交代"借哪些设计品质"，同时给出当前内容和不可改变的事实；布局、形状、箭头风格由模型按参考综合设计。
 5. 按 [diagram-review](../references/diagram/diagram-review.md) 对实际成图做比较，保留成功的设计选择，再修最明显的问题。
 

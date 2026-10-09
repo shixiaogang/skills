@@ -2,7 +2,7 @@
 
 三组「弱 vs 强」对照教学图，用于学习**怎么把一个机制讲清楚**（而非学习视觉样本）。先看预览图，再读分析；仅阅读 TikZ 代码无法判断图是否讲清楚。
 
-每组上半部是解释较弱的版本，下半部是改进版本，两部分保留相同的事实、字号和配色。它们是原创教学构造，不是实验结果，也不是质量提升的统计证据。源文件保留 TikZ 以便查看结构；新图默认走 [diagram-design](../../references/diagram/diagram-design.md) 出设计稿、[diagram-render](../../references/diagram/diagram-render.md) 还原矢量图，借解释方法即可，不必沿用工具。
+每组上半部是解释较弱的版本，下半部是改进版本，两部分保留相同的事实、字号和配色。它们是原创教学构造，不是实验结果，也不是质量提升的统计证据。源文件保留 TikZ 以便查看结构；新复杂框图按 [diagram-design](../../references/diagram/diagram-design.md) 由模型直接生成 SVG，再按 [diagram-render](../../references/diagram/diagram-render.md) 绑定真实字体并渲染核验；简单数学几何仍可直接 TikZ，借解释方法即可，不必沿用工具。
 
 ## 元素怎样形成输出：拼接与逐元素相加
 
