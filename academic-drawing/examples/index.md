@@ -9,6 +9,16 @@
 
 所有图的来源、许可与设计借鉴清单见 [sources.json](sources.json)。
 
+## 外部参考图库
+
+本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 找近年顶会的 Figure 1 / teaser 作为参考——该库收录 ICLR / ICML / NeurIPS / CVPR / ACL / AAAI 2023-2026 的首图，按 **conceptual / framework / pipeline / architecture / taxonomy / teaser** 六类打标签，可直接按版式筛选。
+
+- 在线浏览与筛选：https://qwdwqfwq.github.io/topconf-paper-figure-gallery/
+- 使用方式：挑 1-2 张结构或气质相近的图，**只借布局、分组节奏、文字层次**（见 [diagram-model §二](../references/diagram/diagram-model.md)、[diagram-tikz §二](../references/diagram/diagram-tikz.md)）；视觉元素（色板、字体、线型）仍按 [diagram-visual-style](../references/diagram/diagram-visual-style.md) 的 Lancet 2024-07 + 思源黑体 Medium + 霞鹜文楷落地，不复刻原图配色和装饰。
+- 使用边界：仅做设计方向参考；图里的科学内容、精确标签、机制细节不作为当前任务的事实来源。注意该库图片属于原作者和出版商，72 小时下架政策下别把参考图当作可商用素材。
+
+本地 examples/ 作为"已核验、带借鉴注记"的小而精选集，外部库作为"覆盖面广、随新论文滚动更新"的广谱底库——两者互补。
+
 ## 架构图
 
 ![架构图总览](architecture/contact-sheet.png)

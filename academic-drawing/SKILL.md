@@ -54,6 +54,8 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 - **对照**：[examples/comparison/](examples/comparison/)
 - **神经网络**：[examples/neural-network/](examples/neural-network/)
 
+本地库之外，优先去 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**（ICLR/ICML/NeurIPS/CVPR/ACL/AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 筛选）找更新的真实论文首图作参考。只借布局与分组节奏，视觉元素仍按 [diagram-visual-style](references/diagram/diagram-visual-style.md) 落地。
+
 参考图作用：
 
 - 图像模型路径 → 用参考图品质引导模型，不复制内容（[diagram-model §二](references/diagram/diagram-model.md)）。

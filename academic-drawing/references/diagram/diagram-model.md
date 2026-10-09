@@ -35,7 +35,12 @@
 
 参考图负责**给方向**，不负责定像素。单次给少量相容参考（1-3 张），不把整库塞进一次生成。
 
-从 [examples/](../../examples/index.md) 分 architecture / flow / comparison / neural-network / pedagogical 五类挑选。按工具真实参考图片接口上传；工具只能接文字描述时写简短观察，并记录"只用了文字参考"。
+参考图来源有两处：
+
+- **本地 examples/**：分 architecture / flow / comparison / neural-network / pedagogical 五类，每张图附已核验的借鉴注记。见 [examples/index.md](../../examples/index.md)。
+- **外部 [topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)**：ICLR / ICML / NeurIPS / CVPR / ACL / AAAI 2023-2026 的 Figure 1 / teaser 合集，按 conceptual / framework / pipeline / architecture / taxonomy / teaser 六个标签筛选。覆盖面广、随新论文滚动更新；在线浏览 https://qwdwqfwq.github.io/topconf-paper-figure-gallery/。
+
+按工具真实参考图片接口上传；工具只能接文字描述时写简短观察，并记录"只用了文字参考"。外部图属于原作者，仅用作设计方向参考，不作为科学事实来源，也不作商业素材。
 
 **可以借什么**：
 

@@ -25,7 +25,7 @@
 
 ## 二、选版式
 
-四类版式按读者问题选，每类对应一组布局方案。
+四类版式按读者问题选，每类对应一组布局方案。每一节都给出本地 [examples/](../../examples/) 的参考图目录；本地库之外，也可以在 **[topconf-paper-figure-gallery](https://github.com/qwdwqfwq/topconf-paper-figure-gallery)** 按 conceptual / framework / pipeline / architecture / taxonomy / teaser 标签筛选近年顶会的 Figure 1 作为灵感——只借布局和分组节奏，视觉元素仍按 [diagram-visual-style](diagram-visual-style.md) 落地。
 
 ### 2.1 架构图
 
