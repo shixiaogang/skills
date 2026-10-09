@@ -1,4 +1,4 @@
-% Academic-drawing TikZ template — Lancet 2024-07 palette, 思源黑体 Medium + 霞鹜文楷.
+% Academic-drawing TikZ template — Lancet 2024-07 palette, 思源黑体 Normal + 霞鹜文楷.
 % Lightweight weights, icon color matches node border, minimal titles.
 \documentclass[tikz,border=4pt]{standalone}
 
@@ -9,13 +9,14 @@
 \usepackage{xeCJK}
 
 % ---------- Fonts ----------
-% Node titles use 思源黑体 Medium (not Bold), descriptions use 霞鹜文楷.
+% Node titles use 思源黑体 Normal (lighter than Medium), descriptions use 霞鹜文楷.
+% 字族宏命令名 \sanssemibold / \sanssemiboldcjk 保留（兼容既有引用），但底层字体改为 Normal。
 \setmainfont{Source Han Sans SC}[Scale=0.95]
 \setsansfont{Source Han Sans SC}[Scale=0.95]
 \setCJKmainfont{Source Han Sans SC}
 \setCJKsansfont{Source Han Sans SC}
-\newfontfamily\sanssemibold{Source Han Sans SC Medium}
-\newCJKfontfamily\sanssemiboldcjk{Source Han Sans SC Medium}
+\newfontfamily\sanssemibold{Source Han Sans SC Normal}
+\newCJKfontfamily\sanssemiboldcjk{Source Han Sans SC Normal}
 \newfontfamily\wenkai{LXGW WenKai}
 \newCJKfontfamily\wenkaicjk{LXGW WenKai}
 \renewcommand{\familydefault}{\sfdefault}
@@ -78,7 +79,7 @@
 % ---------- Icon-left node content ----------
 % \icn{icon-pt}{\faXxx}{Title}{Description}{icon-color}
 % Icon color should match the node border, NOT black.
-% Title: 思源黑体 Medium @ 9.4 pt, dark ink.
+% Title: 思源黑体 Normal @ 9.4 pt, dark ink.
 % Description: 霞鹜文楷 @ 7.8 pt, muted gray.
 \newcommand{\icn}[5]{%
   \begin{tabular}{@{}l@{\hspace{1.6mm}}l@{}}%

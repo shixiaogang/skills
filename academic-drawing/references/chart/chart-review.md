@@ -31,7 +31,8 @@
 
 ## C. 配色与可访问性
 
-- 配色与分类、顺序、发散或周期语义匹配（见 [chart-draw](chart-draw.md) 配色小节）。
+- **严格 Lancet 2024-07 色板**：分类配色只能取自 Lancet 11 色主色；chart 与 diagram 共用一套色板（见 [chart-draw 配色](chart-draw.md#配色)）。11 色之外的任何颜色（含"接近 Lancet 但更鲜艳 / 更暗"的近似色）在评审时直接 FAIL。
+- 配色与分类、顺序、发散或周期语义匹配。
 - 不以颜色作为唯一区分手段；至少再使用直接标签、点形、线型、位置或纹理之一。
 - 灰度转换仍能辨认主要关系。
 - 关键区分依赖色彩时，检查色觉缺陷模拟（protanopia / deuteranopia / tritanopia）。
