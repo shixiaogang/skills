@@ -28,7 +28,7 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
    ② 渲染（render）              ← diagram-render
    对照设计稿用 TikZ 还原矢量图。
    不可实现的图片元素先确定方案：
-     a. 复用 fontawesome5 矢量图标
+     a. 优先复用 Lucide SVG，无法复用时退用 Font Awesome 7 regular / outline
      b. 裁剪设计稿作为 PNG 嵌入
      c. 请模型重新生成局部 PNG 嵌入
    编译后与设计稿并排对比，
@@ -43,8 +43,8 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 
 **路径说明**：
 
-- **① 设计（diagram-design）**：描述场景、事实清单、基本视觉要求、参考图品质喂给图像大模型，让模型自主决定构图、分组节奏、色彩比例、形状；输出 PNG **设计稿**作为中间产物（含完整 prompt 记录）；对设计稿做初步事实与视觉检查，通过后再进入第 ②步。视觉风格为 **Lancet 调色板 + 轻盈 technical newsletter 风格 + Google Material Icons 轻权重变体（可选）**；精确字重、线宽、字号、留白等视觉规格不在本步交给模型，由第 ②步 TikZ 严格落地。**字体允许近似**：图像模型通常无法准确嵌入指定字体，设计稿字体近似外观即可，不作为合格条件。
-- **② 渲染（diagram-render）**：对照设计稿按本 skill 视觉语言用 TikZ 重建成矢量图。**TikZ 只负责微小局部改动**——字体、字号微调、边距数值的小量规整、图标替换；布局/留白/连线/形状/颜色一律沿用设计稿，不自行调整。**先确定方案**：对每一个 TikZ 不擅长实现的图片元素，三选一——复用已有 fontawesome5 outline 矢量图标；或裁剪设计稿对应区域；或请模型重新生成局部 PNG。然后用 `tikz_template.tex` 的 Lancet 11 种 role box 实现外壳，用 `\includegraphics` 嵌入 PNG。本步同时承载完整的「视觉规格（TikZ 落地）」中硬规格——Lancet 2024-07 色板、思源黑体 Normal + 霞鹜文楷字体表；其它视觉参数（线宽/箭头/编号圆点/留白节奏）从设计稿观察并沿用。编译后与设计稿**并排对比**，连线、布局、分组、关键文字标签基本一致方可进入评审。
+- **① 设计（diagram-design）**：描述场景、事实清单、基本视觉要求、参考图品质喂给图像大模型，让模型自主决定构图、分组节奏、色彩比例、形状；输出 PNG **设计稿**作为中间产物（含完整 prompt 记录）；对设计稿做初步事实与视觉检查，通过后再进入第 ②步。视觉风格为 **Lancet 调色板 + 轻盈 technical newsletter 风格 + Lucide outline 图标（可选，Font Awesome 7 regular / outline 兜底）**；精确字重、线宽、字号、留白等视觉规格不在本步交给模型，由第 ②步 TikZ 严格落地。**字体允许近似**：图像模型通常无法准确嵌入指定字体，设计稿字体近似外观即可，不作为合格条件。
+- **② 渲染（diagram-render）**：对照设计稿按本 skill 视觉语言用 TikZ 重建成矢量图。**TikZ 只负责微小局部改动**——字体、字号微调、边距数值的小量规整、图标替换；布局/留白/连线/形状/颜色一律沿用设计稿，不自行调整。**先确定方案**：对每一个 TikZ 不擅长实现的图片元素，三选一——优先复用 Lucide SVG，无法复用时退用 Font Awesome 7 regular / outline；或裁剪设计稿对应区域；或请模型重新生成局部 PNG。然后用 `tikz_template.tex` 的 Lancet 11 种 role box 实现外壳，用 `\includegraphics` 嵌入 PNG。本步同时承载完整的「视觉规格（TikZ 落地）」中硬规格——Lancet 2024-07 色板、思源黑体 Normal + 霞鹜文楷字体表；其它视觉参数（线宽/箭头/编号圆点/留白节奏）从设计稿观察并沿用。编译后与设计稿**并排对比**，连线、布局、分组、关键文字标签基本一致方可进入评审。
 - **③ 评审（diagram-review）**：三通道检查——科学准确、读者理解、视觉质量 + 样式对齐。样式对齐把 TikZ 还原图与设计稿并排核对调色板、字重、节点形态、留白节奏、混合渲染衔接、信息完整性；布局/留白/连线/形状/颜色偏离设计稿是阻断项。
 
 ## 数据图路径
@@ -103,7 +103,7 @@ description: 为论文、教材和技术报告设计、生成、修订和评审�
 按 [diagram-render](references/diagram/diagram-render.md)：
 
 1. **读设计稿、先确定方案**：列节点 / 连线 / 分组 / 强调元素清单；对 TikZ 不擅长实现的元素，三选一处理：
-   - **方案 A（优先）**：复用 fontawesome5 或本地 `assets/icons/` 的矢量图标；
+   - **方案 A（优先）**：复用 Lucide SVG 或本地 `assets/icons/` 的矢量图标；Lucide 无对应项时退用 Font Awesome 7 regular / outline；
    - **方案 B**：裁剪设计稿对应区域作为 PNG 嵌入；
    - **方案 C**：请大模型重新生成局部 PNG（指定风格与设计稿一致、透明背景）嵌入。
    每个决策记录到 `assets/README.md` 或代码注释。
@@ -117,7 +117,7 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
 
 与 `drafts/figure-draft.png` 并排对比，确认连线、布局、分组、关键文字标签都能还原、样式气质一致。不一致则调整 TikZ，或回到第 ④步让模型修订设计稿。
 
-工具不可用时（TeX 引擎、xeCJK、fontawesome5 缺失、超时），说明未生成矢量版本，不悄悄回退或启用需额外密钥的服务。
+工具不可用时（TeX 引擎、xeCJK、Lucide SVG 资源或 Font Awesome 7 兼容命令缺失、超时），说明未生成矢量版本，不悄悄回退或启用需额外密钥的服务。
 
 ### 6. 评审（diagram-review）
 

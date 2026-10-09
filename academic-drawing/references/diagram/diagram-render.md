@@ -27,7 +27,7 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 | **字体**（节点标题 → 思源黑体 Normal；描述 → 霞鹜文楷） | **必须换**，TikZ 落地本 skill 字体规格，不照搬设计稿 |
 | 字号层级（在设计稿字号附近微调以保持可读） | **可微调** |
 | 边距数值（如 2.4 mm → 2.5 mm 保持对齐网格） | **可微调** |
-| 图标（Material Icons 语义名 → fontawesome5 outline 命令） | **可换** |
+| 图标（Lucide 语义名 → Lucide SVG；无法复用时 → Font Awesome 7 regular / outline） | **可换** |
 
 布局、留白、连线、形状、颜色的任何**整体性调整**都应该回到第 ①步重新 prompt 大模型出新设计稿，不在 TikZ 里私自改。TikZ 偏离设计稿**布局 / 留白 / 连线 / 形状 / 颜色**是评审 C4 的**阻断项**。
 
@@ -75,13 +75,14 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 
 ### 2.1 方案 A：复用已有矢量图标（**优先**）
 
-能用 fontawesome5 或本地 `assets/icons/` 的矢量图标**近似替代**时，优先用矢量图标：
+优先复用 **Lucide SVG** 或本地 `assets/icons/` 的矢量图标；Lucide 没有合适图标时，才退用 **Font Awesome 7 regular / outline**：
 
-- 通用图标（齿轮 `\faCogs`、数据库 `\faDatabase`、云 `\faCloud`、箭头 `\faArrowRight`、用户 `\faUser`、脑 `\faBrain`、文件 `\faFile` 等）→ 直接 `\usepackage{fontawesome5}` 调用。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。
-- 新版 fontawesome5 的 `\faFileAlt` → `\faFile`、`\faMobileAlt` → `\faMobile`、`\faShieldAlt` 已废弃，首次使用前先 `grep fontawesome5-mapping.def`。
+- Lucide 常用语义（`user`、`cloud`、`database`、`settings`、`play`、`cpu`、`bell`、`chart-bar`、`network`、`workflow`、`shield`）→ 优先使用对应 SVG，经 `\includesvg` 或预转 PDF 后嵌入。
+- Lucide 没有对应项或 SVG 流程不可用 → 退用 Font Awesome 7 的 regular / outline 图标，如 `\faDatabase`、`\faCloud`、`\faUser`。当前 TeX Live 底层仍由 `fontawesome5` 宏包提供兼容 `\faXxx` 命令，不把宏包名误当成设计稿的图标体系。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。
+- 旧别名 `\faFileAlt`、`\faMobileAlt`、`\faShieldAlt` 可能在新版命令集中废弃，首次使用前先 `grep fontawesome5-mapping.def`。
 - 图标颜色传与节点描边同色（如 `lcBlue!90!black`），**不要用 black**。
 
-**适用判断**：设计稿里的图标语义能被矢量图标表达——即使样式略不同（例如设计稿是手绘感的 CPU，fontawesome5 的 `\faMicrochip` 是扁平线稿），只要**语义准确、风格统一**就优先用矢量。读者认的是语义，不是笔触细节。
+**适用判断**：设计稿里的图标语义能被矢量图标表达——即使样式略不同，只要**语义准确、线性 outline 风格统一**就优先用矢量。Lucide 与 Font Awesome 7 不应在同一张图中随意混搭；一旦退用 Font Awesome 7，该图中的同类节点统一使用同一套 regular / outline 风格。
 
 ### 2.2 方案 B：裁剪设计稿作为 PNG 嵌入
 
@@ -110,7 +111,7 @@ TikZ 画不动的局部（复杂机制插画、手绘风示意、不规则曲面
 ```text
 元素：Transformer attention 云图（右上角）
 决策：方案 C（模型补生成）
-原因：fontawesome5 无对应矢量；设计稿裁剪分辨率不够。
+原因：Lucide 与 Font Awesome 7 均无对应矢量；设计稿裁剪分辨率不够。
 来源：assets/attention-cloud.png，prompt 见 assets/attention-cloud.prompt.txt
 ```
 
@@ -356,35 +357,32 @@ feedback        #C85E62 玫红        #C85E62!25   反馈、更新、损失
 
 #### 4.2.4 图标（代码路径）
 
-图标是节点的辅助元素，不是必备。TikZ 侧用 `\usepackage{fontawesome5}`，调用 `\faDatabase`、`\faServer`、`\faCloud` 等。图标颜色设为**节点描边同色**（不是默认黑色），用 `{\color{<role border>}\fontsize{16}{16}\selectfont \faDatabase}` 的方式控制；可用名列表见 [图标资产](../../assets/icons/README.md)。
+图标是节点的辅助元素，不是必备。TikZ 侧**优先复用 Lucide SVG**；Lucide 无对应项或 SVG 流程不可用时，退用 Font Awesome 7 regular / outline。当前 LaTeX 实现仍使用 `\usepackage{fontawesome5}` 提供兼容 `\faXxx` 命令。图标颜色设为**节点描边同色**（不是默认黑色）；可用名列表见 [图标资产](../../assets/icons/README.md)。
 
-**Material Icons → fontawesome5 映射**：[diagram-design](diagram-design.md) 的 prompt 用 Google Material Icons 的语义名（例如 `person`、`cloud`、`database`、`settings`、`play_arrow`），因为图像模型更熟悉这套命名；TikZ 还原时在代码里**映射到最接近的 `fontawesome5` 命令**（Material Icons 没有 TeXLive 包）。常见映射：
+**Lucide → Font Awesome 7 映射**：[diagram-design](diagram-design.md) 的 prompt 优先使用 Lucide 语义名；TikZ 还原优先复用对应 Lucide SVG，无法复用时映射到最接近的 Font Awesome 7 命令。命令实现暂由 `fontawesome5` 宏包兼容提供：
 
-```text
-Material Icon            →  fontawesome5
-person / account_circle  →  \faUser
-devices / laptop         →  \faLaptop
-settings / build         →  \faCogs
-storage                  →  \faDatabase
-bolt / memory            →  \faBolt / \faMemory
-share / fork_right       →  \faStream / \faShareNodes
-public / router          →  \faGlobe / \faNetworkWired
-notifications            →  \faBell
-monitoring / show_chart  →  \faChartLine
-visibility               →  \faEye
-cloud                    →  \faCloud
-smartphone               →  \faMobileScreen
-folder / description     →  \faFolder / \faFileLines
-code / terminal          →  \faCode / \faTerminal
-psychology / smart_toy   →  \faBrain / \faRobot
-lock / shield            →  \faLock / \faShield
-input                    →  \faSignInAlt
-play_arrow               →  \faPlay
-merge_type               →  \faCodeBranch
-category                 →  \faThLarge
-```
+| Lucide | Font Awesome 7 命令 | 语义 |
+|---|---|---|
+| `user` | `\faUser` | 用户 / 客户端 |
+| `cloud` | `\faCloud` | 云 / 远端 |
+| `database` | `\faDatabase` | 数据库 / 持久化 |
+| `server` | `\faServer` | 服务 / 节点 |
+| `cpu` | `\faMicrochip` | 计算 / 推理 |
+| `settings` | `\faCog` / `\faCogs` | 配置 / 服务 |
+| `play` | `\faPlay` | 执行 / 启动 |
+| `square-stack` | `\faLayerGroup` | 层 / 栈 |
+| `bell` | `\faBell` | 通知 / 事件 |
+| `chart-bar` | `\faChartBar` | 分布 / 概率 |
+| `network` | `\faNetworkWired` | 网络 / 路由 |
+| `workflow` | `\faProjectDiagram` | 流程 / DAG |
+| `shield` | `\faShield`（旧包可用 `\faShieldAlt`） | 安全 / 防护 |
+| `lock` | `\faLock` | 隔离 / 加密 |
+| `file-text` | `\faFile`（旧包可用 `\faFileAlt`） | 文档 / 记录 |
+| `brain` | `\faBrain` | 模型 / 大脑 |
+| `arrow-right-left` | `\faExchangeAlt` | 交换 / 双向 |
+| `message-square` | `\faComment` | 消息 / 对话 |
 
-未安装 fontawesome5 时 fallback 使用 Unicode 符号，但 Unicode 不是首选；缺字时在图注说明近似。
+Lucide SVG 与 Font Awesome 7 兼容命令都不可用时，才 fallback 到 Unicode；Unicode 不是首选，缺字时在图注说明近似。
 
 #### 4.2.5 线条层级
 
@@ -580,4 +578,4 @@ python "$skill_dir/scripts/validate.py" \
 
 ## 九、工具不可用时
 
-TeX 引擎、所需宏包或 fontawesome5 不可用时，说明未生成图片，不悄悄改用其他路径或启用需额外密钥的服务。
+TeX 引擎、所需宏包、Lucide SVG 资源或 Font Awesome 7 兼容命令不可用时，说明限制，不悄悄启用需额外密钥的服务。

@@ -59,11 +59,11 @@
   **严格约束**：设计稿里的**每一个**节点填色和描边颜色**必须**出自上述 11 个 HEX 之一（或该 HEX 的固定浅底，透明度在 18% / 22% / 25% / 30% / 35% / 40% / 60% 几档内选取）；**不允许**在色板之外插值、调亮、调暗、换色相，也不允许"接近 Lancet 蓝但更鲜艳"这种近似色。11 色之外的任何色相在评审时会被判定为阻断项（见 [diagram-review C4](diagram-review.md#c4-样式对齐tikz-还原-vs-设计稿)）。chart 面板也共用这同一套 11 色板，见 [chart-draw](../chart/chart-draw.md)。
 
 - **节点内容**：节点标题 + 一行描述（描述是对标题的解说，不是重复）。节点形态是圆角矩形或药丸形 + 浅底 + 深描边。
-- **图标（可选）**：使用 **Google Material Icons** 的语义命名（例如 `person`、`cloud`、`database`、`settings`、`play_arrow`、`memory`、`notifications`）作为图标系统，便于模型识别。图标**不是硬要求**——架构图、系统示意、教学配图适合加；数学/概念示意、同质概率图可以不加；加时整图图标集统一（统一来自 Material Icons 一套，不混 Phosphor / Lucide 等），图标颜色与节点描边同色，不是黑色。[^icon-impl]
+- **图标（可选）**：优先使用 **Lucide** 的语义命名（例如 `user`、`cloud`、`database`、`settings`、`play`、`cpu`、`bell`、`chart-bar`、`network`、`workflow`、`shield`），要求细线、outline、统一 stroke；Lucide 没有合适图标时，退用 **Font Awesome 7** 的 regular / outline 图标。图标**不是硬要求**——架构图、系统示意、教学配图适合加；数学/概念示意、同质概率图可以不加；加时整图图标集统一，不混用其他图标体系，图标颜色与节点描边同色，不是黑色。[^icon-impl]
 - **标注规则**：只保留**贴附在元素上**的注解——节点标题、节点描述、箭头上的边标签、分组边界上的分组名、节点旁的编号圆点。**不加**大标题、游离小标签（侧边 "TRAIN"、"POLICY LOOP" 等）、底部"xx 色=yy"图例条、角上的"图 N"或作者戳。所有能从图自身看懂的信息不另写文字。
 - **字体**：允许模型近似。图像模型通常无法准确嵌入「思源黑体 Normal」或「霞鹜文楷」；设计稿里字体外观近似（字重轻盈、现代无衬线为主、注解类有手写/楷体气质）即可，与本 skill 规定字体不一致**不作为设计稿失败项**，真实字体由 TikZ 还原严格落地。
 
-[^icon-impl]: Material Icons 没有 TeXLive 包，TikZ 还原（第 ②步）在代码里实际用的是 `fontawesome5`——Material Icons 的语义名在还原时映射到最接近的 `\faXxx` 命令。设计稿只需按 Material Icons 的语义写 prompt，无需关心代码路径。
+[^icon-impl]: Lucide 没有原生 TeXLive 包。TikZ 还原（第 ②步）优先复用 Lucide SVG；无法复用时，把 Lucide 语义名映射到最接近的 Font Awesome 7 `\faXxx` 命令。LaTeX 底层暂由 `fontawesome5` 宏包提供兼容命令，映射表见 [diagram-render §4.2](diagram-render.md#42-视觉规格tikz-落地)。
 
 ---
 
@@ -110,7 +110,7 @@ Prompt 由四块组成，每块两三句即可。不写 JSON、不列几十条�
 
 按 §二 给方向，不写死数值：
 
-> "Lancet 2024-07 调色板 + 现代轻盈的 technical newsletter 风格；按角色分色（输入=Lancet 蓝、编码器=Lancet 嫩绿、拼接=Lancet 浅绿、分类器=Lancet 墨绿），自主取色不要求对 HEX；节点是圆角矩形 + 浅底 + 深描边，节点内是节点标题 + 一行描述；若加图标用 Google Material Icons 的语义（person / memory / merge_type / category），整图图标集统一，图标与节点描边同色、不是黑色；字体近似轻盈无衬线即可；所有标注都贴附在节点/连线/分组上，不加大标题、不加游离小标签、不加底部图例条、不加作者戳；白底纯色；文字在最终尺寸清晰。"
+> "Lancet 2024-07 调色板 + 现代轻盈的 technical newsletter 风格；按角色分色（输入=Lancet 蓝、编码器=Lancet 嫩绿、拼接=Lancet 浅绿、分类器=Lancet 墨绿），严格使用给定 HEX；节点是圆角矩形 + 浅底 + 深描边，节点内是节点标题 + 一行描述；若加图标，优先用 Lucide 的 outline 线性图标（user / cpu / workflow / shapes），Lucide 无对应项时才退用 Font Awesome 7 regular / outline，整图图标体系统一，图标与节点描边同色、不是黑色；字体近似轻盈无衬线即可；所有标注都贴附在节点/连线/分组上，不加大标题、不加游离小标签、不加底部图例条、不加作者戳；白底纯色；文字在最终尺寸清晰。"
 
 ### 4.4 参考作用
 
@@ -120,7 +120,7 @@ Prompt 由四块组成，每块两三句即可。不写 JSON、不列几十条�
 
 ### 4.5 完整示例
 
-> 为论文设计一张宽 180 mm 的架构图，帮助读者理解两路输入独立编码再拼接后分类。准确标签：输入 A、输入 B、编码器 A、编码器 B、拼接、分类器、输出。关系：输入 A → 编码器 A → 拼接，输入 B → 编码器 B → 拼接，拼接 → 分类器 → 输出，没有其他连接。Lancet 2024-07 调色板 + 现代轻盈的 technical newsletter 风格；按角色分色（输入=Lancet 蓝、编码器=Lancet 嫩绿、拼接=Lancet 浅绿、分类器=Lancet 墨绿），自主取色不要求对 HEX；节点是圆角矩形 + 浅底 + 深描边，节点内是节点标题 + 一行描述；可选 Google Material Icons（例如 input / memory / merge_type / category），整图图标集统一、与描边同色；字体近似轻盈无衬线即可；所有标注贴附在节点/连线/分组上，不加大标题、不加游离小标签、不加底部图例条；白底纯色。参考附图 microservices-architecture 的分组节奏和文字层次，不复制业务内容和配色。
+> 为论文设计一张宽 180 mm 的架构图，帮助读者理解两路输入独立编码再拼接后分类。准确标签：输入 A、输入 B、编码器 A、编码器 B、拼接、分类器、输出。关系：输入 A → 编码器 A → 拼接，输入 B → 编码器 B → 拼接，拼接 → 分类器 → 输出，没有其他连接。Lancet 2024-07 调色板 + 现代轻盈的 technical newsletter 风格；按角色严格使用给定 HEX 分色（输入=Lancet 蓝、编码器=Lancet 嫩绿、拼接=Lancet 浅绿、分类器=Lancet 墨绿）；节点是圆角矩形 + 浅底 + 深描边，节点内是节点标题 + 一行描述；可选 Lucide outline 图标（例如 user / cpu / workflow / shapes），Lucide 无对应项时才退用 Font Awesome 7 regular / outline，整图图标体系统一、与描边同色；字体近似轻盈无衬线即可；所有标注贴附在节点/连线/分组上，不加大标题、不加游离小标签、不加底部图例条；白底纯色。参考附图 microservices-architecture 的分组节奏和文字层次，不复制业务内容和配色。
 
 ---
 
@@ -161,7 +161,7 @@ Prompt 由四块组成，每块两三句即可。不写 JSON、不列几十条�
 - 调色板是否按角色落在 Lancet 色相上？
 - 每个节点是否都是节点标题 + 一行描述？（图标按需，不作硬要求。）
 - 有无游离注解？（大标题、侧边小标签、底部图例条、作者戳 → 都应删除。）
-- 若使用图标，图标集是否统一（整图来自 Material Icons 一套，不混用）？
+- 若使用图标，是否优先使用 Lucide outline；Lucide 无对应项时才退用 Font Awesome 7 regular / outline？整图是否没有混用其他体系？
 
 **不作检查项**：字体、线宽、箭头粗细、留白节奏、编号圆点尺寸——这些让 TikZ 还原时按 [diagram-render](diagram-render.md) 的「视觉规格（TikZ 落地）」统一落地。
 

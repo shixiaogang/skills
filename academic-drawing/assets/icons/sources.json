@@ -2,19 +2,21 @@
   "collection": "academic-drawing icons",
   "retrieved": "2026-10-08",
   "default_recommendation": {
-    "latex": "fontawesome5",
-    "image_prompt": "describe icon semantically; let model draw (Phosphor regular / Lucide / Material Symbols Outlined are good style anchors)"
+    "design": "Lucide outline",
+    "fallback": "Font Awesome 7 regular / outline",
+    "latex_implementation": "prefer Lucide SVG; fallback commands are provided by fontawesome5 for compatibility",
+    "image_prompt": "describe icon with Lucide semantic names and request thin uniform outline strokes; use Font Awesome 7 regular / outline only when Lucide has no match"
   },
   "sets": [
     {
-      "name": "Font Awesome Free 6",
+      "name": "Font Awesome Free 7",
       "homepage": "https://fontawesome.com/search?o=r&m=free",
       "license": "字体 SIL OFL 1.1；图标 CC BY 4.0；LaTeX 包 LPPL 1.3c",
       "license_url": "https://fontawesome.com/license/free",
-      "latex_package": "fontawesome5 (CTAN) 或 fontawesome6",
-      "install": "TeX Live / MiKTeX 自带 fontawesome5；更新到 2024+ 可用 fontawesome6",
+      "latex_package": "fontawesome5 (CTAN, compatible implementation)",
+      "install": "TeX Live / MiKTeX 使用 fontawesome5 宏包提供兼容 \\faXxx 命令",
       "usage_tikz": "\\usepackage{fontawesome5}; node 内写 \\faDatabase 等",
-      "primary_choice_for": "TikZ 首选；0 依赖图片资源",
+      "primary_choice_for": "Lucide 无对应项或 SVG 流程不可用时的 TikZ 兜底",
       "common_icons": {
         "user": "\\faUser",
         "users": "\\faUsers",
@@ -84,7 +86,7 @@
       "license_url": "https://lucide.dev/license",
       "latex_package": null,
       "usage_prompt": "prompt 中写 \"Lucide-style icon\"；细线、2 px stroke",
-      "primary_choice_for": "需要克制线性图标集时的替代；MDX 文档内嵌",
+      "primary_choice_for": "设计稿和 TikZ SVG 的首选图标集",
       "caveats": "1800+ 图标，无彩色/品牌；SVG → PDF 流水线"
     },
     {
@@ -96,16 +98,6 @@
       "usage_prompt": "prompt 中写 \"Heroicons outline/solid style\"",
       "primary_choice_for": "Tailwind 生态内的默认图标集",
       "caveats": "仅 316 个图标；无品牌/彩色"
-    },
-    {
-      "name": "Material Symbols",
-      "homepage": "https://fonts.google.com/icons",
-      "license": "Apache License 2.0",
-      "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
-      "latex_package": null,
-      "usage_prompt": "prompt 中写 \"Material Symbols Outlined/Rounded/Sharp style icon\"",
-      "primary_choice_for": "Google 生态项目；可用字体轴（FILL/wght/GRAD/opsz）调整",
-      "caveats": "Apache 2.0 建议注明；字体变量轴需较新渲染器"
     },
     {
       "name": "Simple Icons",
@@ -124,7 +116,7 @@
       "license_url": "https://scripts.sil.org/OFL",
       "latex_package": "xeCJK + fontspec 或 lualatex + emoji 包",
       "usage_tikz": "xelatex / lualatex + Noto Color Emoji 字体；Markdown 直接写 UTF-8 emoji",
-      "primary_choice_for": "缺少 fontawesome5 时的 Unicode fallback；或教学图里需要 emoji 的场合",
+      "primary_choice_for": "缺少 Lucide SVG 与 Font Awesome 7 兼容命令时的 Unicode fallback；或教学图里需要 emoji 的场合",
       "caveats": "SIL OFL 禁止单独出售字体；emoji 跨平台渲染差异明显"
     }
   ]
