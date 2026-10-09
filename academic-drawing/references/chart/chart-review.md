@@ -75,4 +75,4 @@ python "$skill_dir/scripts/validate.py" \
 
 ## 三类共同样式核验
 
-核对中文主体标签思源黑体 Normal、必要说明霞鹜文楷 Regular、英文 Inter 与数学实际 STIX2，及共同 Lancet 色板和同语义映射。检查字体文件、实际加载与渲染，不以模板默认字体或仅声明字族作为通过依据。
+核对中文主体标签思源黑体 Normal、必要说明霞鹜文楷 Regular、英文 Fira Math 与数学实际 Fira Math，及共同 Lancet 色板和同语义映射。检查字体文件、实际加载与渲染，不以模板默认字体或仅声明字族作为通过依据。
