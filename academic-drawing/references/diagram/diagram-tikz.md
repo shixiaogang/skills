@@ -117,9 +117,11 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
 模板内置组件：
 
 - **节点样式**：`r client` / `r api` / `r input` / `r database` / `r compute` / `r neutral` / `r queue` / `r observe` / `r warn` / `r risk` / `r feedback`，11 种角色对应 Lancet 11 色；都接受 `minimum width` / `minimum height` 覆盖默认尺寸。
-- **节点内容**：`\icn{<图标 pt>}{\faXxx}{<标题>}{<描述>}{<图标颜色>}`。图标颜色传与节点描边同色（如 `lcBlue!90!black`），**不要用 black**。标题自动用思源黑体 Medium @ 9.4 pt 深墨，描述自动用霞鹜文楷 @ 7.8 pt 中灰。
-- **卡片/标签**：`pill` 系列（角色色环）**仅**在分组边界上作为分组名或节点内的小类型标记使用，不要当画布级游离标签贴到侧边。`figtitle` + `figcaption` 作为**可选**的节点级标题——图能自解释时直接不加。
-- **图标**：`\usepackage{fontawesome5}`。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。新版 fontawesome5 的 `\faFileAlt` → `\faFile`、`\faMobileAlt` → `\faMobile`、`\faShieldAlt` 已废弃，首次使用前先 grep `fontawesome5-mapping.def`。
+- **节点内容**：模板提供两种写法——
+  - 标题 + 描述（默认）：直接在节点里写 `{\sanssemiboldcjk Title}\\[.08em]{\wenkaicjk\color{muted} Description}`，图标按需添加。
+  - 带图标：`\icn{<图标 pt>}{\faXxx}{<标题>}{<描述>}{<图标颜色>}`，图标颜色传与节点描边同色（如 `lcBlue!90!black`），**不要用 black**。图标是**可选**的，不是硬要求。
+- **分组与标题**：`figtitle` + `figcaption` 作为**可选**的节点级标题——图能自解释时直接不加。分组用虚线框 + 分组名（贴在边界上），不要用游离的侧边小标签。
+- **图标（可选）**：`\usepackage{fontawesome5}`。可用图标映射见 [assets/icons/README.md](../../assets/icons/README.md)。新版 fontawesome5 的 `\faFileAlt` → `\faFile`、`\faMobileAlt` → `\faMobile`、`\faShieldAlt` 已废弃，首次使用前先 grep `fontawesome5-mapping.def`。
 - **箭头**：`flow`（中性深灰 Latex 大头 0.9pt，正交折线自动圆角）、`secondary`（更细次要连接）、`dashflow`（虚线可选）、`feedback flow`（Lancet 玫红虚线反馈）。
 - **编号圆点**：`badge blue` / `badge cyan` / `badge teal` / `badge grass` / `badge coral` / `badge rose`，4.8 mm 小号实心圆。
 - **边标签**：`edge label` 用霞鹜文楷灰色，fill=white 便于穿越底色。
@@ -128,11 +130,19 @@ python "$skill_dir/scripts/tikz_compile.py" figure.tex \
 
 ```latex
 \begin{tikzpicture}[x=1mm,y=1mm]
-  % No big title and no side-pill — the figure self-explains via nodes and color.
+  % No big title and no floating side labels — the figure self-explains.
+
+  % 带图标节点（适合架构、角色区分明显的教学图）
   \node[r client,minimum width=30mm,minimum height=14mm] (a) at (14,14)
     {\icn{16}{\faUser}{Alice}{sends message}{lcBlue!90!black}};
-  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14)
-    {\icn{16}{\faGlobe}{REST API}{receives via HTTP}{lcCyan!65!black}};
+
+  % 无图标节点（标题 + 描述，适合纯概念或数学示意）
+  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14) {%
+    \begin{tabular}{@{}l@{}}
+      {\sanssemiboldcjk REST API}\\[.08em]
+      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont receives via HTTP}
+    \end{tabular}};
+
   \draw[flow] (a.east) -- (b.west);
   \node[badge blue] at (36,14) {1};
 \end{tikzpicture}

@@ -43,7 +43,7 @@
 \definecolor{paper}{HTML}{FFFFFF}
 \definecolor{wire}{HTML}{6B7280}
 
-% ---------- Node styles (role boxes, pills, badges, arrows) ----------
+% ---------- Node styles (role boxes, badges, arrows) ----------
 % Icon color should match the node border, not black (see diagram-visual-style.md).
 \tikzset{
   every picture/.style={>={Latex[length=2.6mm,width=1.8mm]},font=\sffamily\fontsize{9}{11}\selectfont},
@@ -59,13 +59,6 @@
   r warn/.style={node card,draw=lcCoral!85!black,fill=lcCoral!35},
   r risk/.style={node card,draw=lcTomato!85!black,fill=lcTomato!30},
   r feedback/.style={node card,draw=lcRose,fill=lcRose!25},
-  pill/.style={rounded rectangle,draw,line width=.6pt,inner xsep=1.8mm,inner ysep=.5mm,font=\sanssemibold\fontsize{7}{8}\selectfont,fill=white,text=muted,draw=muted!60},
-  pill client/.style={pill,text=lcBlue!80!black,draw=lcBlue},
-  pill compute/.style={pill,text=lcTeal!80!black,draw=lcTeal},
-  pill service/.style={pill,text=lcGrass!60!black,draw=lcGrass!80!black},
-  pill queue/.style={pill,text=lcCream!30!black,draw=lcCream!50!black},
-  pill risk/.style={pill,text=lcRose!90!black,draw=lcRose},
-  pill api/.style={pill,text=lcCyan!60!black,draw=lcCyan!80!black},
   badge/.style={circle,draw=none,fill=lcBlue,text=white,minimum size=4.8mm,inner sep=0pt,font=\sanssemibold\fontsize{8}{8}\selectfont},
   badge blue/.style={badge,fill=lcBlue},
   badge cyan/.style={badge,fill=lcCyan},
@@ -105,16 +98,27 @@
 
 \begin{tikzpicture}[x=1mm,y=1mm]
 
-  % --- Example skeleton: minimal pipeline (replace with the verified figure brief) ---
-  % Prefer no title and no side-pill. Only add annotations attached to concrete
-  % nodes / arrows / groups; drop floating labels, legend bars, and author stamps.
+  % --- Example skeleton (replace with the verified figure brief) ---
+  % Only annotations attached to concrete nodes / arrows / groups.
+  % Icons are optional — add when they aid role recognition, skip otherwise.
 
+  % With icon (architecture / teaching feel)
   \node[r client,minimum width=30mm,minimum height=14mm] (a) at (14,14)
     {\icn{16}{\faUser}{Alice}{sends message}{lcBlue!90!black}};
-  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14)
-    {\icn{16}{\faGlobe}{REST API}{receives via HTTP}{lcCyan!65!black}};
-  \node[r queue,minimum width=30mm,minimum height=14mm] (q) at (102,14)
-    {\icn{16}{\faStream}{Kafka}{message topic}{lcCream!30!black}};
+
+  % Without icon (title + description only)
+  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14) {%
+    \begin{tabular}{@{}l@{}}
+      {\sanssemiboldcjk REST API}\\[.08em]
+      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont receives via HTTP}
+    \end{tabular}};
+
+  \node[r queue,minimum width=30mm,minimum height=14mm] (q) at (102,14) {%
+    \begin{tabular}{@{}l@{}}
+      {\sanssemiboldcjk Kafka}\\[.08em]
+      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont message topic}
+    \end{tabular}};
+
   \node[r compute,minimum width=30mm,minimum height=14mm] (c) at (146,14)
     {\icn{16}{\faUser}{Bob}{gets delivery}{lcGrass!65!black}};
 
