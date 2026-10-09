@@ -4,6 +4,7 @@
 % Lightweight weights, icon color matches node border, minimal titles.
 \documentclass[tikz,border=4pt]{standalone}
 
+\usepackage{graphicx}
 \usepackage{bm}
 \usepackage{amsmath}
 \usepackage{iftex}
@@ -50,24 +51,27 @@
 % Icon color should match the node border, not black (see diagram-design.md §4.4).
 \tikzset{
   every picture/.style={>={Latex[length=2.6mm,width=1.8mm]},font=\sffamily\fontsize{9}{11}\selectfont},
+  icon plate/.style={rounded corners=1.2mm,draw=none,minimum size=7mm,inner sep=1mm},
+  node title/.style={font=\sanssemiboldcjk\fontsize{9.8}{12}\selectfont,text=ink},
+  node description/.style={font=\wenkaicjk\fontsize{8}{10}\selectfont,text=muted},
   node card/.style={rectangle,rounded corners=1.6mm,draw,line width=.7pt,fill=white,align=left,inner xsep=2.6mm,inner ysep=2mm,minimum width=34mm,minimum height=13mm},
   r client/.style={node card,draw=lcBlue,fill=lcBlue!18},
   r api/.style={node card,draw=lcCyan,fill=lcCyan!22},
   r input/.style={node card,draw=lcIce,fill=lcIce!30},
   r database/.style={node card,draw=lcTeal,fill=lcTeal!22},
   r compute/.style={node card,draw=lcGrass,fill=lcGrass!25},
-  r neutral/.style={node card,draw=lcMint!90!black,fill=lcMint!40},
-  r queue/.style={node card,draw=lcCream!60!black,fill=lcCream!60},
-  r observe/.style={node card,draw=lcPeach!90!black,fill=lcPeach!40},
-  r warn/.style={node card,draw=lcCoral!85!black,fill=lcCoral!35},
-  r risk/.style={node card,draw=lcTomato!85!black,fill=lcTomato!30},
+  r neutral/.style={node card,draw=lcMint,fill=lcMint!40},
+  r queue/.style={node card,draw=lcCream,fill=lcCream!60},
+  r observe/.style={node card,draw=lcPeach,fill=lcPeach!40},
+  r warn/.style={node card,draw=lcCoral,fill=lcCoral!35},
+  r risk/.style={node card,draw=lcTomato,fill=lcTomato!30},
   r feedback/.style={node card,draw=lcRose,fill=lcRose!25},
   badge/.style={circle,draw=none,fill=lcBlue,text=white,minimum size=4.8mm,inner sep=0pt,font=\sanssemibold\fontsize{8}{8}\selectfont},
   badge blue/.style={badge,fill=lcBlue},
   badge cyan/.style={badge,fill=lcCyan},
   badge teal/.style={badge,fill=lcTeal},
-  badge grass/.style={badge,fill=lcGrass!80!black},
-  badge coral/.style={badge,fill=lcCoral!90!black},
+  badge grass/.style={badge,fill=lcGrass},
+  badge coral/.style={badge,fill=lcCoral},
   badge rose/.style={badge,fill=lcRose},
   figtitle/.style={anchor=south west,text=ink,font=\sanssemiboldcjk\fontsize{11}{14}\selectfont},
   figcaption/.style={anchor=north west,text=muted,font=\wenkaicjk\fontsize{8}{10}\selectfont},
@@ -81,20 +85,25 @@
 % ---------- Icon-left node content ----------
 % \icn{icon-pt}{\faXxx}{Title}{Description}{icon-color}
 % Icon color should match the node border, NOT black.
-% Title: 思源黑体 Normal @ 9.4 pt, dark ink.
+% Title: 思源黑体 Normal @ 9.8 pt, dark ink (role color if readable).
 % Description: 霞鹜文楷 @ 7.8 pt, muted gray.
 \newcommand{\icn}[5]{%
   \begin{tabular}{@{}l@{\hspace{1.6mm}}l@{}}%
-    \raisebox{-0.25ex}{\color{#5}\fontsize{#1}{#1}\selectfont #2} &
+    \raisebox{-0.25ex}{\tikz[baseline=(glyph.base)]{\node[icon plate,fill=#5!40,text=#5,font=\fontsize{#1}{#1}\selectfont] (glyph) {#2};}} &
     \begin{tabular}[c]{@{}l@{}}%
-      {\sanssemiboldcjk\color{ink}\fontsize{9.4}{11.2}\selectfont #3}\\[0.08em]%
+      {\sanssemiboldcjk\color{ink}\fontsize{9.8}{12}\selectfont #3}\\[0.08em]%
       {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont #4}%
     \end{tabular}%
   \end{tabular}%
 }
 
+% Lucide vector asset (preconvert SVG to PDF, keep its source and license):
+% \icnasset{assets/icons/database.pdf}{Local data $D_1$}{stays local}{lcTeal}
+\newcommand{\icnasset}[4]{\icn{16}{\includegraphics[width=5.5mm]{#1}}{#2}{#3}{#4}}
+% The asset itself must use the role color; a PDF is not recolored by \color.
+
 % Prefer the explicit form:
-%   \icn{16}{\faUser}{Title}{Desc}{lcBlue!90!black}
+%   \icn{16}{\faUser}{Title}{Desc}{lcBlue}
 % for maximum clarity. The role box style sets fill/draw colors; the icon
 % color (last arg of \icn) should match the node border, NOT black.
 \begin{document}
@@ -103,27 +112,22 @@
 
   % --- Example skeleton (replace with the verified figure brief) ---
   % Only annotations attached to concrete nodes / arrows / groups.
-  % Icons are optional — add when they aid role recognition, skip otherwise.
+  % Default: semantic outline icon + same-hue plate + title + gray short description.
+  % Omit only for objects without useful icon semantics (e.g. pure math operators).
 
   % With icon (architecture / teaching feel)
   \node[r client,minimum width=30mm,minimum height=14mm] (a) at (14,14)
-    {\icn{16}{\faUser}{Alice}{sends message}{lcBlue!90!black}};
+    {\icn{16}{\faUser[regular]}{Alice}{sends message}{lcBlue}};
 
-  % Without icon (title + description only)
-  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14) {%
-    \begin{tabular}{@{}l@{}}
-      {\sanssemiboldcjk REST API}\\[.08em]
-      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont receives via HTTP}
-    \end{tabular}};
+  % These are compatibility examples. Prefer \icnasset with Lucide PDF assets.
+  \node[r api,minimum width=30mm,minimum height=14mm] (b) at (58,14)
+    {\icn{16}{\faPaperPlane[regular]}{REST API}{receives via HTTP}{lcCyan}};
 
-  \node[r queue,minimum width=30mm,minimum height=14mm] (q) at (102,14) {%
-    \begin{tabular}{@{}l@{}}
-      {\sanssemiboldcjk Kafka}\\[.08em]
-      {\wenkaicjk\color{muted}\fontsize{7.8}{9.6}\selectfont message topic}
-    \end{tabular}};
+  \node[r queue,minimum width=30mm,minimum height=14mm] (q) at (102,14)
+    {\icn{16}{\faEnvelope[regular]}{Kafka}{message topic}{lcCream}};
 
   \node[r compute,minimum width=30mm,minimum height=14mm] (c) at (146,14)
-    {\icn{16}{\faUser}{Bob}{gets delivery}{lcGrass!65!black}};
+    {\icn{16}{\faUser[regular]}{Bob}{gets delivery}{lcGrass}};
 
   \draw[flow] (a.east) -- (b.west);
   \node[badge blue] at (36,14) {1};
@@ -133,7 +137,7 @@
   \node[badge coral] at (124,14) {3};
 
   \node[r database,minimum width=30mm,minimum height=14mm] (db) at (58,-6)
-    {\icn{16}{\faDatabase}{Message DB}{persists message}{lcTeal!80!black}};
+    {\icn{16}{\faHdd[regular]}{Message DB}{persists message}{lcTeal}};
   \draw[secondary] (b.south) -- (db.north);
 
 \end{tikzpicture}

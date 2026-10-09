@@ -1,0 +1,19 @@
+{
+  "name": "newsletter-style",
+  "generated_at": "2026-10-09",
+  "source": "本次用户授权的风格迭代",
+  "tool": "image_gen.imagegen",
+  "model": "未暴露",
+  "seed": "未暴露",
+  "file": "newsletter-style.png",
+  "sha256": "80cdbcee879760207f2fef27933907c889e3ab0559ff26306f98e26f08b93f0e",
+  "width_px": 1536,
+  "height_px": 1024,
+  "prompt": "newsletter-style.prompt.txt",
+  "purpose": "跨主题风格品质参考，机制另核验，布局自主选择",
+  "references": [
+    "user-approved federated-blend style",
+    "academic-drawing api-gateway-fanout"
+  ],
+  "rights_note": "本次任务生成；外部参考只用于品质方向，原图未在本目录重分发"
+}

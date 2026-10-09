@@ -1,5 +1,7 @@
 # 图标资产
 
+主要角色与功能模块默认使用统一 Lucide outline 图标和同色较深底板，配醒目标题与灰色短说明；纯数学算子或无准确图标的对象可省略。不能为方便编译而在 TikZ 还原时整批删除设计稿图标。
+
 本目录是本 skill 的图标使用参考。图标语义与设计稿风格**优先 Lucide**，Lucide 无对应项时退用 **Font Awesome 7 regular / outline**。TikZ 端优先复用 Lucide SVG；Font Awesome 7 的 LaTeX 命令暂由 `fontawesome5` 宏包兼容实现。映射表见 [diagram-render §4.2.4](../../references/diagram/diagram-render.md#424-图标代码路径)。
 
 ## 路径选择
