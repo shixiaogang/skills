@@ -1,5 +1,7 @@
 # 框架图设计（diagram-design）—— 流水线第 ①步
 
+本步适用于一般框架图。简单几何、少量点边关系和规则格表示意按 [SKILL.md 的例外](../../SKILL.md#简单几何示意图例外) 直接用 TikZ 绘制，无需经过模型设计。
+
 **本步由图像大模型实现**：把场景、必须保留的事实、基本视觉要求交给模型，让它**自主决定构图、分组节奏、色彩比例、形状**，输出一张 PNG **设计稿**。设计稿通过初步检查后，进入 [diagram-render](diagram-render.md) 用 TikZ 还原；最终评审走 [diagram-review](diagram-review.md)。整体流水线见 [SKILL.md](../../SKILL.md)。
 
 **本步产物**（存 `outputs/<figure-name>/`）：
