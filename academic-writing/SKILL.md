@@ -45,7 +45,7 @@ description: 规划、起草、修订和评审中文科技文本，包括中文�
 | 起草正文 | [准备](references/preparation.md)、[内容](references/content.md)、[结构](references/structure.md)、[中文表达](references/grammar-and-style.md) | 章内各方面共同回答问题，节内定义、推理、例子与结论形成连贯解释 |
 | 修订现有文本 | [成稿检查](references/review.md)、[中文表达](references/grammar-and-style.md) | 先诊断理解障碍；有内容或结构问题时再读取对应文件 |
 | 评审或验收 | [成稿检查](references/review.md) | 按实际阅读效果定位问题，再按根因读取其他文件 |
-| 保留审查记录、逐章逐句审读或复查多轮修订 | [成稿检查](references/review.md)、[审查记录与记录复核](references/review-records.md) | 固定版本与覆盖范围，留下可定位的判断依据；分别验收记录质量和正文质量 |
+| 保留审查记录、逐章逐句审读或复查多轮修订 | [成稿检查](references/review.md)、[审查记录与记录复核](references/review-records.md)、[规则核对与执行记录](references/review-criteria.md) | 固定版本与覆盖范围，逐项记录适用性、实际动作和证据；分别验收记录质量和正文质量 |
 | 概念突兀、短句生硬、比较失配、定义混杂 | [中文改写示例](references/chinese-examples.md) | 对照真实反馈归纳的症状，修复产生问题的原因 |
 
 模型、算法、公式、实验和图表的完整性由“内容”检查；章节分解、同层关系、知识依赖与综合回答由“结构”检查。用户反馈任务太多、章内关系不明或方法只被点名时，先判断是分组、层级还是展开不足，再修改相应范围。用户已确定的结构应承接；仍有影响理解的矛盾时说明依据，不因增加方法就另起一套章节。不要把示例目录或句式变成新的固定模板。
